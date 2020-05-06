@@ -1,0 +1,84 @@
+/* font-family: 'Shrikhand', cursive; */
+/* font-family: 'Raleway', sans-serif; */
+/* bleu : #0C4C7B
+yellow green : #C1D14B
+corail : #F36B5C
+dark slate Gray : #3B3C3C
+Slate Gray : #716B74 */
+/* la page remplit la fenêtre de navigation */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+header{
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #0C4C7B;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+}
+header figure img {
+    height: 100px;
+}
+
+h1 {
+    font-family: 'Raleway', sans-serif;
+    color:#C1D14B;
+}
+.container-fluid {
+    height:100%;
+}
+.row{
+    height:100%;
+    overflow-y: auto; 
+}
+/* la map doit occuper 100% de la hauteur de son container */
+#map {
+    height:100%;
+    width: 100%;
+    position: sticky;
+    left: 0;
+    top: 0;
+  }
+.card-img{
+    width: 100%;
+}
+.list{
+    padding: 10px;
+    background-color: #716B74;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* scrollbar de la liste */
+}
+#dropdownMenu2, .btn {
+    padding: 10px;
+    margin: 10px;
+    height: 100%;
+}
+/* Ajustements de mise en page en fonction de la taille de l'écran */
+/* Small devices & Medium devices (landscape phones, tablets, 768px and less) */
+@media (max-width: 768px) {
+    header {
+        justify-content: center;
+    }
+    h1 {
+        font-size: 24px;
+    }
+    header figure img {
+        height: 80px;
+    }
+    #dropdownMenu2, button, .card-text {
+        font-size: 12px;
+    }
+    .card-title {
+        font-size: 14px;
+    }
+    .text-muted
+    {
+        font-size: 10px;
+    }
+}
+
