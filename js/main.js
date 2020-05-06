@@ -488,17 +488,17 @@ function init(){
         });
         $('#newRestPublishBtn').click(function(){
             let newRestName=$('#restToAdd').val();
-            //ajout des données dans le fichier json 
+            //ajout des données dans le tableau des restaurants
             let newRestaurantToPublish = new Restaurant(
                 this.restaurantName =newRestName,
                 this.address=newRestAddress,
                 this.lat=newRestLat,
                 this.long=newRestLng,
                 this.ratings=[]
-            )
+            );
             console.log(newRestaurantToPublish);
             console.log(restaurants);
-            restaurants.unshift(newRestaurantToPublish);
+            restaurants.unshift(newRestaurantToPublish);// l'ajoute au début
             console.log(restaurants);
             // vide la liste des restaurants
             $('.result').empty();
@@ -720,6 +720,8 @@ function init(){
     // clique sur le bouton publier
     $('#publishCommentBtn').click(function(){
         // récupération des données
+        console.log(restaurantN);
+        console.log(restaurants);
         let noteToPublish=document.getElementById('note');
         noteToPublish=noteToPublish.options[noteToPublish.selectedIndex].value;
         let commentToPublish=document.getElementById('commentToAdd').value;  
@@ -727,25 +729,228 @@ function init(){
         console.log(commentToPublish);
         // vérification de la saisie
 
-        // ajouter le commentaire au fichier JSON
-/*         restaurant.ratings.push({ 
-            "stars":noteToPublish,
-            "comment":commentToPublish,
-        }); */
-        //const url ="js/data.json";
-        let newComment = new FormData();
-        newComment.append("stars",noteToPublish);
-        newComment.append("comment",commentToPublish);
-        console.log(newComment);
-        // envoie de l'objet FormData sur le fichier JSON
-        ajaxPost(url,newComment,function(reponse){
-            // affichage en cas de succès
-            console.log("commentaire ajouté");
-            },
-            true
-        );// fin ajaxPost
+        // ajouter le commentaire à l'objet Restaurant
+        for (let i=0;i<restaurants.length;i++){
+            console.log(restaurants[i].restaurantName);
+            console.log(restaurantN);
+            console.log(restaurants[i].restaurantName==restaurantN);
+            if (restaurants[i].restaurantName==restaurantN){
+                restaurants[i].ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
+                console.log(restaurants[i].ratings);
+                break;
+            }
+        }
+        // vide la liste des restaurants
+        $('.result').empty();
+        // vide la map
+        $('#map').empty();
+        // regénérer la map 
+       // insert la carte dans le div map
+       map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 43.6833, lng: 4.2},
+        zoom: 15,
+    // personnalisation de la map
+    styles :
+    [
+        {"elementType": "geometry","stylers": [{"color": "#ebe3cd"}]},
+        {"elementType": "labels.text.fill","stylers": [{"color": "#523735"}]},
+        {"elementType": "labels.text.stroke","stylers": [{"color": "#f5f1e6"}]},
+        {"featureType": "administrative","elementType": "geometry.stroke","stylers": [{"color": "#c9b2a6"}]},
+        {"featureType": "administrative.land_parcel","elementType": "geometry.stroke","stylers": [{ "color": "#dcd2be"}]},
+        {"featureType": "administrative.land_parcel","elementType": "labels.text.fill","stylers": [{"color": "#ae9e90"}]},
+        { "featureType": "landscape.natural","elementType": "geometry","stylers": [{"color": "#dfd2ae"}]},
+        {"featureType": "poi","elementType": "geometry","stylers": [{"color": "#dfd2ae"}]},
+        { "featureType": "poi","elementType": "labels.text.fill","stylers": [{"color": "#93817c"}]},
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry.fill",
+            "stylers": [
+            {
+                "color": "#a5b076"
+            }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#447530"
+            }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#f5f1e6"
+            }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#fdfcf8"
+            }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#f8c967"
+            }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [
+            {
+                "color": "#e9bc62"
+            }
+            ]
+        },
+        {
+            "featureType": "road.highway.controlled_access",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#e98d58"
+            }
+            ]
+        },
+        {
+            "featureType": "road.highway.controlled_access",
+            "elementType": "geometry.stroke",
+            "stylers": [
+            {
+                "color": "#db8555"
+            }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#806b63"
+            }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#dfd2ae"
+            }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#8f7d77"
+            }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "labels.text.stroke",
+            "stylers": [
+            {
+                "color": "#ebe3cd"
+            }
+            ]
+        },
+        {
+            "featureType": "transit.station",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#dfd2ae"
+            }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry.fill",
+            "stylers": [
+            {
+                "color": "#b9d3c2"
+            }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#92998d"
+            }
+            ]
+        }
+        ]
+    });
+    // créer un objet GMap
+    let myMap= new GMap(map);
+    // récupère la position de l'utilisateur pour centrer la map
+    myMap.getUserPosition();
+    //regébere la liste des restaurants
+    restaurants.forEach(restaurant=>{
+        // enregistre la position avec la lat et long
+        let restPosition = new google.maps.LatLng(restaurant.lat,restaurant.long);    
+        // composant bootstrap pour la liste des restaurants     
+        $('.result').append(`
+            <div class="card mb-3">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                    <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${restaurant.lat},${restaurant.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">${restaurant.restaurantName}</h5>
+                            <p class="card-text">${restaurant.address}</p>
+                            <p class="card-text">Note Moyenne : ${restaurant.averageRating}</p>                     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `)        
+        // marqueur à la position du restaurant
+        var marker = new google.maps.Marker({
+            position:restPosition, 
+            icon: "/images/restaurant.png",
+            map:map
+        }); 
+        marker.setMap(map);
+        // au clique sur le marqueur affiche une fenetre avec les avis
+        let content=`<h3>${restaurant.restaurantName}</h3>`;
+        for(let i=0; i<restaurant.ratings.length; i++){
+            content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
+            + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
+        }
+        content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
+        var infoWindowOptions = {
+            content: content
+        };
+        var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+        google.maps.event.addListener(marker, 'click', function() {
+            restaurantN = restaurant.restaurantName;
+            infoObj = infoWindow;
+            $("#addCommentModalLabel").text(restaurantN);
+            infoWindow.open(map, marker);
+        });
+    })// fin for each
+       
         // close modal
-
+        $('#addCommentModal').modal('hide');
         // générer la carte a nouveau
 
     }); // fin $('#publishCommentBtn').click
