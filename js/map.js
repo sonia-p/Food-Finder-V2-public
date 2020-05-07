@@ -1,23 +1,24 @@
 class GMap {
-    constructor(map,zoom, lat, lng){
+    constructor(map,zoom, lat, lng,position){
         this.map = map;
         this.zoom = zoom;
         this.lat = lat;
         this.lng = lng,
-        this.getUserPosition()
+        this.position=position
+        
     }
     getUserPosition(){
         // geolocation du user
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position)=> { 
             // récupération de la lat et long pour enregistrer la position
-            let pos = {
+            this.position = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            map.setCenter(pos);
+            map.setCenter(this.position);
             let infoWindow = new google.maps.InfoWindow;
-            infoWindow.setPosition(pos);
+            infoWindow.setPosition(this.position);
             infoWindow.setContent('Tu es là !');
             infoWindow.open(map);              
             }, function() {
@@ -29,7 +30,7 @@ class GMap {
             }
     }
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
+    infoWindow.setPosition(this.position);
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
         'Error: Your browser doesn\'t support geolocation.');
