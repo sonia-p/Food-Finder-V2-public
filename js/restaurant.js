@@ -1,5 +1,5 @@
 class Restaurant {
-    constructor (restaurantName, address, lat, long,ratings,averageRating,position,marker){
+    constructor (restaurantName, address, lat, long,ratings,averageRating,position,marker, star){
         this.restaurantName = restaurantName;
         this.address = address;
         this.lat = lat;
@@ -8,7 +8,9 @@ class Restaurant {
         this.averageRating = averageRating;
         this.position = position;
         this.marker=marker;
+        this.star=star;
         this.generateAverageRating()
+        this.addStar()
 
     }
     generateAverageRating(){
@@ -17,7 +19,7 @@ class Restaurant {
         for(let i=0; i< this.ratings.length; i++){
             sumRatings = sumRatings + this.ratings[i].stars;
         }
-        this.averageRating=Math.round((sumRatings/(this.ratings.length+1)));  
+        this.averageRating=Math.round((sumRatings/(this.ratings.length)));  
     }
     addCard(){
         $('.result').append(`
@@ -30,7 +32,7 @@ class Restaurant {
                         <div class="card-body">
                             <h5 class="card-title">${this.restaurantName}</h5>
                             <p class="card-text">${this.address}</p>
-                            <p class="card-text">Note Moyenne : ${this.averageRating}</p>                     
+                            <p class="card-text">Note Moyenne &nbsp;  ${this.star}</p>                     
                         </div>
                     </div>
                 </div>
@@ -52,6 +54,19 @@ class Restaurant {
         console.log(this.ratings);
         this.generateAverageRating();
         console.log(this.averageRating);    
+        
+    }
+    addStar(){
+        if (this.averageRating>0){
+            this.star="";
+            for (let i=0; i<this.averageRating; i++){
+                this.star+=`&nbsp;<img src="images/star.png" alt="star ou étoile">&nbsp;`;
+                console.log(this.star);
+            }
+        } else {
+            this.star=`Aucun commentaire`;
+        }
+
         
     }
 /*     add(){

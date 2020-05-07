@@ -1,4 +1,11 @@
 let data=[
+   {
+      "restaurantName" :"La Table Des Platanes",
+      "address":"1 Av. du Général de Gaulle, 30470 Aimargues",
+      "lat":43.686496,
+      "long":4.207217,
+      "ratings":[]
+    },
     {
       "restaurantName" :"Bar Brasserie Le Soleil",
       "address":"9 Boulevard Jules Ferry, 30470 Aimargues",
