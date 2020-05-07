@@ -236,11 +236,8 @@ function init(){
                     };
                     var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
                     google.maps.event.addListener(restaurant.marker, 'click', function() {
-                        restaurantN = restaurant.restaurantName;
-                        infoObj = infoWindow;
-                        markerObj = marker;
-                        $("#addCommentModalLabel").text(restaurantN);
-                        infoWindow.open(map, marker);
+                        $("#addCommentModalLabel").text(restaurant.restaurantName);
+                        infoWindow.open(map, restaurant.marker);
                     });
                 } else {
                     console.log("n'affiche pas ce restaurant : "+ restaurant);
