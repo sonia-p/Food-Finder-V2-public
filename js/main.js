@@ -14,10 +14,12 @@ let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
 let ListWithNewRestaurants=[];
 //initialise la carte
 function init(){
+    // créer un objet GMap
+    let myMap= new GMap(map,15, 43.6833,4.2); 
     // insert la carte dans le div map
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 43.6833, lng: 4.2},
-        zoom: 15,
+        center: {lat: myMap.lat, lng: myMap.lng},
+        zoom: myMap.zoom,
     // personnalisation de la map
     styles :
     [
@@ -167,43 +169,19 @@ function init(){
         }
         ]
     });
-    // créer un objet GMap
-    let myMap= new GMap(map);
-    // récupère la position de l'utilisateur pour centrer la map
-    myMap.getUserPosition(); 
 
-    // traitement pour chaque restaurant
+    // récupère les données et crée un objet Restaurant pour chaque restaurant
     data.forEach(data=>{
         restaurants.push(new Restaurant(data.restaurantName, data.address, data.lat, data.long, data.ratings,""));
     });
     console.log(restaurants);
-    restaurants.forEach(restaurant=>{
-        // enregistre la position avec la lat et long
-        let restPosition = new google.maps.LatLng(restaurant.lat,restaurant.long);    
+
+    // traitement pour chaque restaurant
+    restaurants.forEach(restaurant=>{            
         // composant bootstrap pour la liste des restaurants     
-        $('.result').append(`
-            <div class="card mb-3">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                    <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${restaurant.lat},${restaurant.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">${restaurant.restaurantName}</h5>
-                            <p class="card-text">${restaurant.address}</p>
-                            <p class="card-text">Note Moyenne : ${restaurant.averageRating}</p>                     
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `)        
+        restaurant.addCard();
         // marqueur à la position du restaurant
-        var marker = new google.maps.Marker({
-            position:restPosition, 
-            icon: "/images/restaurant.png",
-            map:map
-        }); 
-        marker.setMap(map);
+        restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=`<h3>${restaurant.restaurantName}</h3>`;
         for(let i=0; i<restaurant.ratings.length; i++){
@@ -215,16 +193,11 @@ function init(){
             content: content
         };
         var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-        google.maps.event.addListener(marker, 'click', function() {
-            restaurantN = restaurant.restaurantName;
-            infoObj = infoWindow;
-            $("#addCommentModalLabel").text(restaurantN);
-            infoWindow.open(map, marker);
+        google.maps.event.addListener(restaurant.marker, 'click', function() {
+            $("#addCommentModalLabel").text(restaurant.restaurantName);
+            infoWindow.open(map, restaurant.marker);
         });
     })// fin for each
-
-
-    let restaurantN, infoObj, markerObj;
 
     //au clique sur le bouton filter
     $('.filter-btn').click(function(){
@@ -403,59 +376,35 @@ function init(){
             myMap.getUserPosition();
             // génère la liste en fonction des notes sélectionnées
             restaurants.forEach(restaurant=>{
-
                 // affiche les restaurants contenus dans la sélection
-                if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){
-                    $('.result').append(`
-                    <div class="card mb-3">
-                        <div class="row no-gutters">
-                            <div class="col-md-4">
-                            <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${restaurant.lat},${restaurant.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">${restaurant.restaurantName}</h5>
-                                    <p class="card-text">${restaurant.address}</p>
-                                    <p class="card-text">Note Moyenne : ${restaurant.averageRating}</p>                     
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `)   
-                let restPosition = new google.maps.LatLng(restaurant.lat,restaurant.long);     
-                // marqueur à la position du restaurant
-                var marker = new google.maps.Marker({
-                    position:restPosition, 
-                    icon: "/images/restaurant.png",
-                    map:map
-                }); 
-                marker.setMap(map);
-
-                // au clique sur le marqueur =>fenetre avec les avis
-                let content=`<h3>${restaurant.restaurantName}</h3>`;
-                for(let i=0; i<restaurant.ratings.length; i++){
-                    content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
-                    + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
-                }
-                content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
-                var infoWindowOptions = {
-                    content: content
-                };
-                var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-                google.maps.event.addListener(marker, 'click', function() {
-                    restaurantN = restaurant.restaurantName;
-                    infoObj = infoWindow;
-                    markerObj = marker;
-                    $("#addCommentModalLabel").text(restaurantN);
-                    infoWindow.open(map, marker);
-                });
-            }// fin if
+                if (restaurant.averageRating >=1 && restaurant.averageRating <= 2){
+                    restaurant.addCard();
+                    restaurant.addMarker();                               
+                    // au clique sur le marqueur =>fenetre avec les avis
+                    let content=`<h3>${restaurant.restaurantName}</h3>`;
+                    for(let i=0; i<restaurant.ratings.length; i++){
+                        content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
+                        + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
+                    }
+                    content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
+                    var infoWindowOptions = {
+                        content: content
+                    };
+                    var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+                    google.maps.event.addListener(this.marker, 'click', function() {
+                        restaurantN = restaurant.restaurantName;
+                        infoObj = infoWindow;
+                        markerObj = marker;
+                        $("#addCommentModalLabel").text(restaurantN);
+                        infoWindow.open(map, marker);
+                    });
+                }// fin if
             }) // fin for each            
         }// fin else        
     }); // fin $('.filter-btn').click
 
     //// AJOUT D'UN RESTAURANT ////
-    let newRestAddress, newRestLat, newRestLng;
+    //let newRestAddress, newRestLat, newRestLng;
     // Configuration du click listener
     map.addListener('click', function(mapsMouseEvent) {
         // Creation d'une fenetre avec les coordonnées du clique
@@ -477,7 +426,7 @@ function init(){
                 });
                 // mettre dans champs Adresse l'adresse récupérée 
                 $('#adressToAdd').val(results[0].formatted_address);
-                newRestAddress=results[0].formatted_address;
+                let newRestAddress=results[0].formatted_address;
                 console.log(newRestAddress);
             } else {
                 window.alert('No results found');
@@ -505,10 +454,12 @@ function init(){
             // vide la map
             $('#map').empty();
             // regénérer la map 
+            // créer un objet GMap
+            let myMap= new GMap(map,15, 43.6833,4.2); 
             // insert la carte dans le div map
             map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 43.6833, lng: 4.2},
-                zoom: 15,
+                center: {lat: myMap.lat, lng: myMap.lng},
+                zoom: myMap.zoom,
             // personnalisation de la map
             styles :
             [
@@ -658,38 +609,14 @@ function init(){
                 }
                 ]
             });
-            // créer un objet GMap
-            let myMap= new GMap(map);
             // récupère la position de l'utilisateur pour centrer la map
             myMap.getUserPosition();
-            //regébere la liste des restaurants
-            restaurants.forEach(restaurant=>{
-                // enregistre la position avec la lat et long
-                let restPosition = new google.maps.LatLng(restaurant.lat,restaurant.long);    
+            //regénère la liste des restaurants
+            restaurants.forEach(restaurant=>{            
                 // composant bootstrap pour la liste des restaurants     
-                $('.result').append(`
-                    <div class="card mb-3">
-                        <div class="row no-gutters">
-                            <div class="col-md-4">
-                            <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${restaurant.lat},${restaurant.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">${restaurant.restaurantName}</h5>
-                                    <p class="card-text">${restaurant.address}</p>
-                                    <p class="card-text">Note Moyenne : ${restaurant.averageRating}</p>                     
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `)        
+                restaurant.addCard();
                 // marqueur à la position du restaurant
-                var marker = new google.maps.Marker({
-                    position:restPosition, 
-                    icon: "/images/restaurant.png",
-                    map:map
-                }); 
-                marker.setMap(map);
+                restaurant.addMarker();       
                 // au clique sur le marqueur affiche une fenetre avec les avis
                 let content=`<h3>${restaurant.restaurantName}</h3>`;
                 for(let i=0; i<restaurant.ratings.length; i++){
@@ -701,26 +628,20 @@ function init(){
                     content: content
                 };
                 var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-                google.maps.event.addListener(marker, 'click', function() {
-                    restaurantN = restaurant.restaurantName;
-                    infoObj = infoWindow;
-                    $("#addCommentModalLabel").text(restaurantN);
-                    infoWindow.open(map, marker);
+                google.maps.event.addListener(restaurant.marker, 'click', function() {
+                    $("#addCommentModalLabel").text(restaurant.restaurantName);
+                    infoWindow.open(map, restaurant.marker);
                 });
             })// fin for each
             //ferme le modal
             $('#addRestaurantModal').modal('hide');
         });// fin #newRestPublishBtn.click
-
     }); // fin map.addlistener
-
-
 
     //// AJOUT D'UN NOUVEAU COMMENTAIRE ////
     // clique sur le bouton publier
     $('#publishCommentBtn').click(function(){
         // récupération des données
-        console.log(restaurantN);
         console.log(restaurants);
         let noteToPublish=document.getElementById('note');
         noteToPublish=noteToPublish.options[noteToPublish.selectedIndex].value;
@@ -729,28 +650,24 @@ function init(){
         console.log(commentToPublish);
         // vérification de la saisie
 
-        // ajouter le commentaire à l'objet Restaurant
+        // ajouter le commentaire à l'objet Restaurant        
         for (let i=0;i<restaurants.length;i++){
-            console.log(restaurants[i].restaurantName);
-            console.log(restaurantN);
-            console.log(restaurants[i].restaurantName==restaurantN);
-            if (restaurants[i].restaurantName==restaurantN){
-                restaurants[i].ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
-                console.log(restaurants[i].ratings);
+            if (restaurants[i].restaurantName==$("#addCommentModalLabel").text()){
+                restaurants[i].addComment(noteToPublish,commentToPublish);
                 break;
             }
-        }
+        } 
         // vide la liste des restaurants
         $('.result').empty();
         // vide la map
         $('#map').empty();
-        // regénérer la map 
-       // insert la carte dans le div map
-       map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 43.6833, lng: 4.2},
-        zoom: 15,
-    // personnalisation de la map
-    styles :
+        // regénérer la map
+        let myMap= new GMap(map,15, 43.6833,4.2);
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: myMap.lat, lng: myMap.lng},
+            zoom: myMap.zoom,
+        // personnalisation de la map
+        styles :
     [
         {"elementType": "geometry","stylers": [{"color": "#ebe3cd"}]},
         {"elementType": "labels.text.fill","stylers": [{"color": "#523735"}]},
@@ -897,39 +814,16 @@ function init(){
             ]
         }
         ]
-    });
-    // créer un objet GMap
-    let myMap= new GMap(map);
-    // récupère la position de l'utilisateur pour centrer la map
-    myMap.getUserPosition();
-    //regébere la liste des restaurants
-    restaurants.forEach(restaurant=>{
-        // enregistre la position avec la lat et long
-        let restPosition = new google.maps.LatLng(restaurant.lat,restaurant.long);    
+        });
+
+    
+    //regénère la liste des restaurants
+    restaurants.forEach(restaurant=>{            
+        // restaurant.add();
         // composant bootstrap pour la liste des restaurants     
-        $('.result').append(`
-            <div class="card mb-3">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                    <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${restaurant.lat},${restaurant.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">${restaurant.restaurantName}</h5>
-                            <p class="card-text">${restaurant.address}</p>
-                            <p class="card-text">Note Moyenne : ${restaurant.averageRating}</p>                     
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `)        
+        restaurant.addCard();
         // marqueur à la position du restaurant
-        var marker = new google.maps.Marker({
-            position:restPosition, 
-            icon: "/images/restaurant.png",
-            map:map
-        }); 
-        marker.setMap(map);
+        restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=`<h3>${restaurant.restaurantName}</h3>`;
         for(let i=0; i<restaurant.ratings.length; i++){
@@ -941,17 +835,14 @@ function init(){
             content: content
         };
         var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-        google.maps.event.addListener(marker, 'click', function() {
-            restaurantN = restaurant.restaurantName;
-            infoObj = infoWindow;
-            $("#addCommentModalLabel").text(restaurantN);
-            infoWindow.open(map, marker);
+        google.maps.event.addListener(restaurant.marker, 'click', function() {
+            $("#addCommentModalLabel").text(restaurant.restaurantName);
+            infoWindow.open(map, restaurant.marker);
         });
-    })// fin for each
-       
-        // close modal
-        $('#addCommentModal').modal('hide');
-        // générer la carte a nouveau
+    })// fin for each      
+    // close modal
+    $('#addCommentModal').modal('hide');
+    // générer la carte a nouveau
 
     }); // fin $('#publishCommentBtn').click
 

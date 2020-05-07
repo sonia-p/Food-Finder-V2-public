@@ -1,6 +1,10 @@
 class GMap {
-    constructor(map){
-        this.map=map;
+    constructor(map,zoom, lat, lng){
+        this.map = map;
+        this.zoom = zoom;
+        this.lat = lat;
+        this.lng = lng,
+        this.getUserPosition()
     }
     getUserPosition(){
         // geolocation du user
@@ -11,11 +15,11 @@ class GMap {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            this.map.setCenter(pos);
+            map.setCenter(pos);
             let infoWindow = new google.maps.InfoWindow;
             infoWindow.setPosition(pos);
             infoWindow.setContent('Tu es là !');
-            infoWindow.open(this.map);              
+            infoWindow.open(map);              
             }, function() {
             this.handleLocationError(true, infoWindow, this.GMap.getCenter());
             });   
