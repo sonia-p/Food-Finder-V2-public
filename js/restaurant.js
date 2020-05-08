@@ -46,6 +46,10 @@ class Restaurant {
                 </div>
             </div>
         `)   
+        if (this.star==="Aucun commentaire"){
+            $(`#readCommentBtn${this.identifiant}`).hide();
+        }
+        
     }
     addMarker(){
         this.position = new google.maps.LatLng(this.lat,this.long); 
@@ -72,6 +76,7 @@ class Restaurant {
             }
         } else {
             this.star=`Aucun commentaire`;
+           
         }
     }
     generateCommentHtml(){
