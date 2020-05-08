@@ -181,11 +181,22 @@ function init(){
         //restaurant.generateList();
         // composant bootstrap pour la liste des restaurants     
         restaurant.addCard();
+        // au clique sur lis le avis
         $(`#${restaurant.identifiant}`).hide();
         let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-        bouton.addEventListener('click', function(){           
+        bouton.addEventListener('click', function(){
+            $(`.${restaurant.identifiant}`).hide();           
             $(`#${restaurant.identifiant}`).toggle();
+
         });
+        // au clique sur ecris un avis
+        $(`.${restaurant.identifiant}`).hide();
+        let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
+        bouton2.addEventListener('click', function(){   
+            $(`#${restaurant.identifiant}`).hide();        
+            $(`.${restaurant.identifiant}`).toggle();
+        });
+
         // marqueur à la position du restaurant
         restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
@@ -228,8 +239,15 @@ function init(){
                     restaurant.addCard();
                     $(`#${restaurant.identifiant}`).hide();
                     let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-                    bouton.addEventListener('click', function(){           
+                    bouton.addEventListener('click', function(){
+                        $(`.${restaurant.identifiant}`).hide();           
                         $(`#${restaurant.identifiant}`).toggle();
+                    });
+                    $(`.${restaurant.identifiant}`).hide();
+                    let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
+                    bouton2.addEventListener('click', function(){   
+                        $(`#${restaurant.identifiant}`).hide();        
+                        $(`.${restaurant.identifiant}`).toggle();
                     });
                     // marqueur à la position du restaurant
                     restaurant.addMarker();       
@@ -308,8 +326,15 @@ function init(){
                 restaurant.addCard();
                 $(`#${restaurant.identifiant}`).hide();
                 let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-                bouton.addEventListener('click', function(){           
+                bouton.addEventListener('click', function(){
+                    $(`.${restaurant.identifiant}`).hide();           
                     $(`#${restaurant.identifiant}`).toggle();
+                });
+                $(`.${restaurant.identifiant}`).hide();
+                let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
+                bouton2.addEventListener('click', function(){   
+                    $(`#${restaurant.identifiant}`).hide();        
+                    $(`.${restaurant.identifiant}`).toggle();
                 });
                 // marqueur à la position du restaurant
                 restaurant.addMarker();       
@@ -338,24 +363,26 @@ function init(){
 
     //// AJOUT D'UN NOUVEAU COMMENTAIRE ////
     // clique sur le bouton publier
-    $('#publishCommentBtn').click(function(){
+    $('.publishCommentBtn').click(function(event){
+        console.log(event.target.id);
         // récupération des données
         console.log(restaurants);
-        let noteToPublish=document.getElementById('note');
-        noteToPublish=noteToPublish.options[noteToPublish.selectedIndex].value;
-        let commentToPublish=document.getElementById('commentToAdd').value;  
+        let noteToPublish=$('.note').val(); 
+        let commentToPublish=$('.commentToAdd').val();
         console.log(noteToPublish);
         console.log(commentToPublish);
         // vérification de la saisie
-
+        
         // ajouter le commentaire à l'objet Restaurant        
         for (let i=0;i<restaurants.length;i++){
-            if (restaurants[i].restaurantName==$("#addCommentModalLabel").text()){
+            if (restaurants[i].restaurantName==$("#addCommentModalLabel").text() || restaurants[i].identifiant==event.target.id){
+                console.log(noteToPublish,commentToPublish);
                 restaurants[i].addComment(noteToPublish,commentToPublish);
+                console.log(restaurants[i].ratings);
                 break;
             }
-        } 
-
+        }  
+        console.log('boucle');
     // vide la liste des restaurants
     $('.result').empty();
     //regénère la liste des restaurants
@@ -365,8 +392,15 @@ function init(){
         restaurant.addCard();
         $(`#${restaurant.identifiant}`).hide();
         let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-        bouton.addEventListener('click', function(){           
+        bouton.addEventListener('click', function(){
+            $(`.${restaurant.identifiant}`).hide();           
             $(`#${restaurant.identifiant}`).toggle();
+        });
+        $(`.${restaurant.identifiant}`).hide();
+        let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
+        bouton2.addEventListener('click', function(){   
+            $(`#${restaurant.identifiant}`).hide();        
+            $(`.${restaurant.identifiant}`).toggle();
         });
         // marqueur à la position du restaurant
         restaurant.addMarker();       

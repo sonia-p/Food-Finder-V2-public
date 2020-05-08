@@ -37,18 +37,37 @@ class Restaurant {
                             <p class="card-text">${this.address}</p>
                             <p class="card-text">Note Moyenne &nbsp;  ${this.star}</p> 
                             <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-secondary">Lis les avis</button> 
-                            <button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal" >Ecris un avis</button>                  
-                            <div id="${this.identifiant}" class="text-muted">
-                                ${this.commentHtml}
-                            </div> 
-                        </div>
-                    </div>
+                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-secondary">Ecris un avis</button>                                     
+                        </div>                       
+                    </div>                   
                 </div>
+                <div id="${this.identifiant}" class="text-muted">
+                ${this.commentHtml}
+                </div>  
+                <form class="${this.identifiant}">
+                    <div class="form-group">
+                        <select  class="note custom-select custom-select-sm">
+                            <option  selected>Note</option>
+                            <option value="1">1 étoile</option>
+                            <option value="2">2 étoiles</option>
+                            <option value="3">3 étoiles</option>
+                            <option value="4">4 étoiles</option>
+                            <option value="5">5 étoiles</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="commentToAdd form-control" rows="3" placeholder="Commentaire"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-secondary">Publies</button>
+                    </div>
+                </form>
             </div>
         `)   
         if (this.star==="Aucun commentaire"){
             $(`#readCommentBtn${this.identifiant}`).hide();
         }
+
         
     }
     addMarker(){
