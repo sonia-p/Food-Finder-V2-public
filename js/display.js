@@ -1,8 +1,0 @@
-class Display{
-    constructor(){
-
-    }
-    generateList(){
-
-    }
-}

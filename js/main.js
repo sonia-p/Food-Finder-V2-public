@@ -174,12 +174,11 @@ function init(){
 
     // récupère les données et crée un objet Restaurant pour chaque restaurant
     data.forEach(data=>{
-        restaurants.push(new Restaurant(data.identifiant,data.restaurantName, data.address, data.lat, data.long, data.ratings,""));
+        restaurants.push(new Restaurant(data.identifiant,data.restaurantName, data.address, data.lat, data.long, data.ratings,""));       
     });
     console.log(restaurants);
-
-    // traitement pour chaque restaurant
-    restaurants.forEach(restaurant=>{            
+    restaurants.forEach(restaurant=>{
+        //restaurant.generateList();
         // composant bootstrap pour la liste des restaurants     
         restaurant.addCard();
         $(`#${restaurant.identifiant}`).hide();
@@ -201,17 +200,17 @@ function init(){
             $("#addCommentModalLabel").text(restaurant.restaurantName);
             infoWindow.open(map, restaurant.marker);
         });
-    })// fin for each
+    });
 
-    //au clique sur le bouton filter
+    //// FILTER ////
     $('.filter-btn').click(function(){
         // récupère valeur des champs mini et maxi
         let noteMini= document.getElementById('noteMini');
         let mini = noteMini.options[noteMini.selectedIndex].value;
-        console.log(mini);
         let noteMaxi= document.getElementById('noteMaxi');
         let maxi = noteMaxi.options[noteMaxi.selectedIndex].value;
-        console.log(maxi);
+        $('#noteMaxi').prop('selectedIndex',0);
+        $('#noteMini').prop('selectedIndex',0);
         // message d'erreur si mauvaise sélection des notes
         if (mini=="Note Mini" || maxi=="Note Maxi" || mini>maxi){
             alert('vous devez selectionner une note mini et maxi et/ou la note mini doit être inférieur à la note maxi');
@@ -224,20 +223,20 @@ function init(){
                 // affiche les restaurants contenus dans la sélection
                 if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){                   
                     console.log("le restaurant va être affiché :" + restaurant);
+                    //restaurant.generateList();
+                    // composant bootstrap pour la liste des restaurants     
                     restaurant.addCard();
                     $(`#${restaurant.identifiant}`).hide();
                     let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
                     bouton.addEventListener('click', function(){           
                         $(`#${restaurant.identifiant}`).toggle();
                     });
-                    restaurant.addMarker();                               
-                    // au clique sur le marqueur =>fenetre avec les avis
-                    let content=`<h3>${restaurant.restaurantName}</h3>`;
-                    for(let i=0; i<restaurant.ratings.length; i++){
-                        content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
-                        + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
-                    }
-                    content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ecris un avis</button>`;
+                    // marqueur à la position du restaurant
+                    restaurant.addMarker();       
+                    // au clique sur le marqueur affiche une fenetre avec les avis
+                    let content=`<h3>${restaurant.restaurantName}</h3>
+                                    ${restaurant.commentHtml}`;
+                    content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
                     var infoWindowOptions = {
                         content: content
                     };
@@ -251,7 +250,8 @@ function init(){
                     restaurant.marker.setMap(null);
                 }
             }) // fin for each            
-        }// fin else        
+        }// fin else
+     
     }); // fin $('.filter-btn').click
 
     //// AJOUT D'UN RESTAURANT ////

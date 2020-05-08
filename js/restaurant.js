@@ -72,7 +72,6 @@ class Restaurant {
             this.star="";
             for (let i=0; i<this.averageRating; i++){
                 this.star+=`&nbsp;<img src="images/star.png" alt="star ou étoile">&nbsp;`;
-                console.log(this.star);
             }
         } else {
             this.star=`Aucun commentaire`;
@@ -87,19 +86,19 @@ class Restaurant {
         }
         this.commentHtml=content;
     }
-   
-    
-/*     addinfowindow(){
+/*     generateList(){           
         // composant bootstrap pour la liste des restaurants     
         this.addCard();
+        $(`#${this.identifiant}`).hide();
+        let bouton= document.getElementById(`readCommentBtn${this.identifiant}`);
+        bouton.addEventListener('click', function(){           
+            $(`#${this.identifiant}`).toggle();
+        });
         // marqueur à la position du restaurant
         this.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${this.restaurantName}</h3>`;
-        for(let i=0; i<this.ratings.length; i++){
-            content += `<p>Note : ${this.ratings[i].stars}</p>`
-            + `<p>Commentaire : ${this.ratings[i].comment}</p>`
-        }
+        let content=`<h3>${this.restaurantName}</h3>
+                        ${this.commentHtml}`;
         content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
         var infoWindowOptions = {
             content: content
@@ -109,5 +108,8 @@ class Restaurant {
             $("#addCommentModalLabel").text(this.restaurantName);
             infoWindow.open(map, this.marker);
         });
+
     } */
+    
+
 }
