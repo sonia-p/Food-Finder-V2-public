@@ -174,7 +174,7 @@ function init(){
 
     // récupère les données et crée un objet Restaurant pour chaque restaurant
     data.forEach(data=>{
-        restaurants.push(new Restaurant(data.restaurantName, data.address, data.lat, data.long, data.ratings,""));
+        restaurants.push(new Restaurant(data.identifiant,data.restaurantName, data.address, data.lat, data.long, data.ratings,""));
     });
     console.log(restaurants);
 
@@ -182,15 +182,16 @@ function init(){
     restaurants.forEach(restaurant=>{            
         // composant bootstrap pour la liste des restaurants     
         restaurant.addCard();
+        $(`#${restaurant.identifiant}`).hide();
+        let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
+        bouton.addEventListener('click', function(){           
+            $(`#${restaurant.identifiant}`).toggle();
+        });
         // marqueur à la position du restaurant
         restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=`<h3>${restaurant.restaurantName}</h3>
                         ${restaurant.commentHtml}`;
-/*         for(let i=0; i<restaurant.ratings.length; i++){
-            content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
-            + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
-        } */
         content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
         var infoWindowOptions = {
             content: content
@@ -224,6 +225,11 @@ function init(){
                 if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){                   
                     console.log("le restaurant va être affiché :" + restaurant);
                     restaurant.addCard();
+                    $(`#${restaurant.identifiant}`).hide();
+                    let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
+                    bouton.addEventListener('click', function(){           
+                        $(`#${restaurant.identifiant}`).toggle();
+                    });
                     restaurant.addMarker();                               
                     // au clique sur le marqueur =>fenetre avec les avis
                     let content=`<h3>${restaurant.restaurantName}</h3>`;
@@ -296,170 +302,15 @@ function init(){
             console.log(restaurants);
             // vide la liste des restaurants
             $('.result').empty();
-            // vide la map
-            $('#map').empty();
-            // regénérer la map 
-            // créer un objet GMap
-            let myMap= new GMap(map,15, 43.6833,4.2); 
-            // insert la carte dans le div map
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: myMap.lat, lng: myMap.lng},
-                zoom: myMap.zoom,
-            // personnalisation de la map
-            styles :
-            [
-                {"elementType": "geometry","stylers": [{"color": "#ebe3cd"}]},
-                {"elementType": "labels.text.fill","stylers": [{"color": "#523735"}]},
-                {"elementType": "labels.text.stroke","stylers": [{"color": "#f5f1e6"}]},
-                {"featureType": "administrative","elementType": "geometry.stroke","stylers": [{"color": "#c9b2a6"}]},
-                {"featureType": "administrative.land_parcel","elementType": "geometry.stroke","stylers": [{ "color": "#dcd2be"}]},
-                {"featureType": "administrative.land_parcel","elementType": "labels.text.fill","stylers": [{"color": "#ae9e90"}]},
-                { "featureType": "landscape.natural","elementType": "geometry","stylers": [{"color": "#dfd2ae"}]},
-                {"featureType": "poi","elementType": "geometry","stylers": [{"color": "#dfd2ae"}]},
-                { "featureType": "poi","elementType": "labels.text.fill","stylers": [{"color": "#93817c"}]},
-                {
-                    "featureType": "poi.park",
-                    "elementType": "geometry.fill",
-                    "stylers": [
-                    {
-                        "color": "#a5b076"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "poi.park",
-                    "elementType": "labels.text.fill",
-                    "stylers": [
-                    {
-                        "color": "#447530"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road",
-                    "elementType": "geometry",
-                    "stylers": [
-                    {
-                        "color": "#f5f1e6"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road.arterial",
-                    "elementType": "geometry",
-                    "stylers": [
-                    {
-                        "color": "#fdfcf8"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road.highway",
-                    "elementType": "geometry",
-                    "stylers": [
-                    {
-                        "color": "#f8c967"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road.highway",
-                    "elementType": "geometry.stroke",
-                    "stylers": [
-                    {
-                        "color": "#e9bc62"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road.highway.controlled_access",
-                    "elementType": "geometry",
-                    "stylers": [
-                    {
-                        "color": "#e98d58"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road.highway.controlled_access",
-                    "elementType": "geometry.stroke",
-                    "stylers": [
-                    {
-                        "color": "#db8555"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "road.local",
-                    "elementType": "labels.text.fill",
-                    "stylers": [
-                    {
-                        "color": "#806b63"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "transit.line",
-                    "elementType": "geometry",
-                    "stylers": [
-                    {
-                        "color": "#dfd2ae"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "transit.line",
-                    "elementType": "labels.text.fill",
-                    "stylers": [
-                    {
-                        "color": "#8f7d77"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "transit.line",
-                    "elementType": "labels.text.stroke",
-                    "stylers": [
-                    {
-                        "color": "#ebe3cd"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "transit.station",
-                    "elementType": "geometry",
-                    "stylers": [
-                    {
-                        "color": "#dfd2ae"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "water",
-                    "elementType": "geometry.fill",
-                    "stylers": [
-                    {
-                        "color": "#b9d3c2"
-                    }
-                    ]
-                },
-                {
-                    "featureType": "water",
-                    "elementType": "labels.text.fill",
-                    "stylers": [
-                    {
-                        "color": "#92998d"
-                    }
-                    ]
-                }
-                ]
-            });
-            // récupère la position de l'utilisateur pour centrer la map
-            myMap.getUserPosition();
             //regénère la liste des restaurants
             restaurants.forEach(restaurant=>{            
                 // composant bootstrap pour la liste des restaurants     
                 restaurant.addCard();
+                $(`#${restaurant.identifiant}`).hide();
+                let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
+                bouton.addEventListener('click', function(){           
+                    $(`#${restaurant.identifiant}`).toggle();
+                });
                 // marqueur à la position du restaurant
                 restaurant.addMarker();       
                 // au clique sur le marqueur affiche une fenetre avec les avis
@@ -505,14 +356,18 @@ function init(){
             }
         } 
 
-
-
-    
+    // vide la liste des restaurants
+    $('.result').empty();
     //regénère la liste des restaurants
     restaurants.forEach(restaurant=>{            
-        // restaurant.add();
+        
         // composant bootstrap pour la liste des restaurants     
         restaurant.addCard();
+        $(`#${restaurant.identifiant}`).hide();
+        let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
+        bouton.addEventListener('click', function(){           
+            $(`#${restaurant.identifiant}`).toggle();
+        });
         // marqueur à la position du restaurant
         restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
@@ -538,9 +393,7 @@ function init(){
     }); // fin $('#publishCommentBtn').click
 
 } // fin function init
-/* $('.readCommentBtn').click(function(){
-    
-}); */
+
 
 
 

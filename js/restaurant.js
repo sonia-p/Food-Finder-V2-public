@@ -1,5 +1,6 @@
 class Restaurant {
-    constructor (restaurantName, address, lat, long,ratings,averageRating,position,marker, star,commentHtml){
+    constructor (identifiant,restaurantName, address, lat, long,ratings,averageRating,position,marker, star,commentHtml){
+        this.identifiant=identifiant,
         this.restaurantName = restaurantName;
         this.address = address;
         this.lat = lat;
@@ -35,21 +36,16 @@ class Restaurant {
                             <h5 class="card-title">${this.restaurantName}</h5>
                             <p class="card-text">${this.address}</p>
                             <p class="card-text">Note Moyenne &nbsp;  ${this.star}</p> 
-                            <button type="button" id="readCommentBtn" class="btn btn-secondary" data-toggle="collapse" data-target=".comments" aria-expanded="false" aria-controls="comments" data-parent=".comments">Lis les avis</button> 
+                            <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-secondary">Lis les avis</button> 
                             <button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal" >Ecris un avis</button>                  
-                            <div class="comments collapse text-muted">
+                            <div id="${this.identifiant}" class="text-muted">
                                 ${this.commentHtml}
                             </div> 
                         </div>
                     </div>
                 </div>
             </div>
-        `)
-         
-/*         let bouton= document.getElementById('readCommentBtn');
-        bouton.addEventListener('click', ()=>{
-            $('#comments').show();
-        })   */     
+        `)   
     }
     addMarker(){
         this.position = new google.maps.LatLng(this.lat,this.long); 
@@ -62,9 +58,9 @@ class Restaurant {
     }
     addComment(noteToPublish,commentToPublish){    
         this.ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
-        console.log(this.ratings);
         this.generateAverageRating();
-        console.log(this.averageRating);    
+        this.generateCommentHtml();
+        this.addStar();  
         
     }
     addStar(){
@@ -86,9 +82,9 @@ class Restaurant {
         }
         this.commentHtml=content;
     }
-        
+   
     
-/*     add(){
+/*     addinfowindow(){
         // composant bootstrap pour la liste des restaurants     
         this.addCard();
         // marqueur à la position du restaurant

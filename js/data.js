@@ -1,5 +1,6 @@
 let data=[
    {
+      "identifiant":1,
       "restaurantName" :"La Table Des Platanes",
       "address":"1 Av. du Général de Gaulle, 30470 Aimargues",
       "lat":43.686496,
@@ -7,6 +8,7 @@ let data=[
       "ratings":[]
     },
     {
+      "identifiant":2,
       "restaurantName" :"Bar Brasserie Le Soleil",
       "address":"9 Boulevard Jules Ferry, 30470 Aimargues",
       "lat":43.687013,
@@ -23,6 +25,7 @@ let data=[
        ]
     },
     {
+      "identifiant":3,
       "restaurantName":"Le Mazet",
       "address":"3 Boulevard Saint-Louis, 30470 Aimargues",
       "lat":43.685779,
@@ -39,6 +42,7 @@ let data=[
        ]
     },
     {
+      "identifiant":4,
       "restaurantName" :"La Pause d’Anaëlle",
       "address":"17 Avenue des Anciens Combattants, 30470 Aimargues",
       "lat":43.685019,
@@ -54,6 +58,7 @@ let data=[
          }
       ]
    }, {
+      "identifiant":5,
       "restaurantName" :"Brasserie Le France by Simon - Aimargues",
       "address":"1 Place Mont Redon, 30470 Aimargues",
       "lat":43.685469,
