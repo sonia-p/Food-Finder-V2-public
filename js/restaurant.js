@@ -33,11 +33,10 @@ class Restaurant {
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <div  class="card-body">
-                            <h5 class="card-title">${this.restaurantName}</h5>
+                            <h5 class="card-title">${this.restaurantName}&nbsp;  ${this.star}</h5>
                             <p class="card-text">${this.address}</p>
-                            <p class="card-text">Note Moyenne &nbsp;  ${this.star}</p> 
-                            <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-secondary">Lis les avis</button> 
-                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-secondary">Ecris un avis</button>                                     
+                            <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lis les avis</button> 
+                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecris un avis</button>                                     
                         </div>                       
                     </div>                   
                 </div>
@@ -46,7 +45,7 @@ class Restaurant {
                 </div>  
                 <form class="${this.identifiant}">
                     <div class="form-group">
-                        <select  class="note custom-select custom-select-sm">
+                        <select id="note" class="note custom-select custom-select-sm">
                             <option  selected>Note</option>
                             <option value="1">1 étoile</option>
                             <option value="2">2 étoiles</option>
@@ -59,12 +58,12 @@ class Restaurant {
                         <textarea class="commentToAdd form-control" rows="3" placeholder="Commentaire"></textarea>
                     </div>
                     <div class="form-group">
-                        <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-secondary">Publies</button>
+                        <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-light">Publies</button>
                     </div>
                 </form>
             </div>
         `)   
-        if (this.star==="Aucun commentaire"){
+        if (this.star==="<i><small>Aucun commentaire</small></i>"){
             $(`#readCommentBtn${this.identifiant}`).hide();
         }
 
@@ -93,7 +92,7 @@ class Restaurant {
                 this.star+=`&nbsp;<img src="images/star.png" alt="star ou étoile">&nbsp;`;
             }
         } else {
-            this.star=`Aucun commentaire`;
+            this.star=`<i><small>Aucun commentaire</small></i>`;
            
         }
     }

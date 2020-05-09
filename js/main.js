@@ -200,9 +200,9 @@ function init(){
         // marqueur à la position du restaurant
         restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${restaurant.restaurantName}</h3>
+        let content=`<h3>${restaurant.restaurantName}&nbsp;  ${restaurant.star}</h3>
                         ${restaurant.commentHtml}`;
-        content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
+        //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
         var infoWindowOptions = {
             content: content
         };
@@ -367,8 +367,13 @@ function init(){
         console.log(event.target.id);
         // récupération des données
         console.log(restaurants);
-        let noteToPublish=$('.note').val(); 
+        let note= document.getElementById('note');
+        console.log(note);
+        let noteToPublish = note.options[note.selectedIndex].value;
         let commentToPublish=$('.commentToAdd').val();
+        $('.note').prop('selectedIndex',0);
+      
+ 
         console.log(noteToPublish);
         console.log(commentToPublish);
         // vérification de la saisie
