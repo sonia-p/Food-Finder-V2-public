@@ -200,7 +200,7 @@ function init(){
         // marqueur à la position du restaurant
         restaurant.addMarker();       
         // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${restaurant.restaurantName}&nbsp;  ${restaurant.star}</h3>
+        let content=`<h3>${restaurant.restaurantName}&nbsp;${restaurant.star}</h3>
                         ${restaurant.commentHtml}`;
         //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
         var infoWindowOptions = {
@@ -295,7 +295,7 @@ function init(){
                 });
                 // mettre dans champs Adresse l'adresse récupérée 
                 $('#adressToAdd').val(results[0].formatted_address);
-                let newRestAddress=results[0].formatted_address;
+                newRestAddress=results[0].formatted_address;
                 console.log(newRestAddress);
             } else {
                 window.alert('No results found');
@@ -308,6 +308,7 @@ function init(){
             let newRestName=$('#restToAdd').val();
             //ajout des données dans le tableau des restaurants
             let newRestaurantToPublish = new Restaurant(
+                this.id = (restaurants.length+1),
                 this.restaurantName =newRestName,
                 this.address=newRestAddress,
                 this.lat=newRestLat,
@@ -319,41 +320,38 @@ function init(){
             restaurants.unshift(newRestaurantToPublish);// l'ajoute au début
             console.log(restaurants);
             // vide la liste des restaurants
-            $('.result').empty();
+            //$('.result').empty();
             //regénère la liste des restaurants
-            restaurants.forEach(restaurant=>{            
+            //restaurants.forEach(restaurant=>{            
                 // composant bootstrap pour la liste des restaurants     
-                restaurant.addCard();
-                $(`#${restaurant.identifiant}`).hide();
-                let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
+                restaurants[0].addCard();
+                $(`#${restaurants[0].identifiant}`).hide();
+                let bouton= document.getElementById(`readCommentBtn${restaurants[0].identifiant}`);
                 bouton.addEventListener('click', function(){
-                    $(`.${restaurant.identifiant}`).hide();           
-                    $(`#${restaurant.identifiant}`).toggle();
+                    $(`.${restaurants[0].identifiant}`).hide();           
+                    $(`#${restaurants[0].identifiant}`).toggle();
                 });
-                $(`.${restaurant.identifiant}`).hide();
-                let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
+                $(`.${restaurants[0].identifiant}`).hide();
+                let bouton2= document.getElementById(`addCommentBtn${restaurants[0].identifiant}`);
                 bouton2.addEventListener('click', function(){   
-                    $(`#${restaurant.identifiant}`).hide();        
-                    $(`.${restaurant.identifiant}`).toggle();
+                    $(`#${restaurants[0].identifiant}`).hide();        
+                    $(`.${restaurants[0].identifiant}`).toggle();
                 });
                 // marqueur à la position du restaurant
-                restaurant.addMarker();       
+                restaurants[0].addMarker();       
                 // au clique sur le marqueur affiche une fenetre avec les avis
-                let content=`<h3>${restaurant.restaurantName}</h3>`;
-                for(let i=0; i<restaurant.ratings.length; i++){
-                    content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
-                    + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
-                }
-                content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ecris un avis</button>`;
+                let content=`<h3>${restaurants[0].restaurantName}&nbsp;  ${restaurants[0].star}</h3>;
+                            ${restaurants[0].commentHtml}`;
+                //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ecris un avis</button>`;
                 var infoWindowOptions = {
                     content: content
                 };
                 var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-                google.maps.event.addListener(restaurant.marker, 'click', function() {
-                    $("#addCommentModalLabel").text(restaurant.restaurantName);
-                    infoWindow.open(map, restaurant.marker);
+                google.maps.event.addListener(restaurants[0].marker, 'click', function() {
+                    $("#addCommentModalLabel").text(restaurants[0].restaurantName);
+                    infoWindow.open(map, restaurants[0].marker);
                 });
-            })// fin for each
+            //})// fin for each
             // rétablie la valeur par défault
             //this.form.reset();
             //ferme le modal

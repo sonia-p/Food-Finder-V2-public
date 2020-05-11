@@ -18,11 +18,18 @@ class Restaurant {
     }
     generateAverageRating(){
         // calcul la moyenne des notes
-        let sumRatings=0;
-        for(let i=0; i< this.ratings.length; i++){
-            sumRatings = sumRatings + this.ratings[i].stars;
+        console.log(this.restaurantName);
+        console.log(this.ratings);
+        console.log(!!this.ratings.length);
+        if(!!this.ratings.length){
+            let sumRatings=0;
+            for(let i=0; i< this.ratings.length; i++){
+                sumRatings = sumRatings + this.ratings[i].stars;
+            }
+            this.averageRating=Math.round((sumRatings/(this.ratings.length))); 
+            console.log(this.averageRating);
         }
-        this.averageRating=Math.round((sumRatings/(this.ratings.length)));  
+        
     }
     addCard(){
         $('.result').append(`
@@ -73,8 +80,9 @@ class Restaurant {
         this.position = new google.maps.LatLng(this.lat,this.long); 
         this.marker = new google.maps.Marker({
             position:this.position, 
-            icon: "/images/restaurant.png",
-            map:map
+            icon: new google.maps.MarkerImage('images/restaurant.png'),
+            map:map,
+            title: this.restaurantName
         }); 
         this.marker.setMap(map);
     }
