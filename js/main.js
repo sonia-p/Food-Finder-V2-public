@@ -11,15 +11,12 @@ function loadScript(){
 window.onload = loadScript;
 let restaurants=[];
 let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
-let ListWithNewRestaurants=[];
+
 //initialise la carte
 function init(){
-    // créer un objet GMap
-    let myMap= new GMap(map,15, 43.6833,4.2); 
-    // récupère la position de l'utilisateur 
-    myMap.getUserPosition();
-    // insert la carte dans le div map
-    map = new google.maps.Map(document.getElementById('map'), {
+    let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
+    myMap.getUserPosition(); // récupère la position de l'utilisateur 
+    map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
         zoom: myMap.zoom,
     // personnalisation de la map
@@ -172,48 +169,35 @@ function init(){
         ]
     });
 
-    // récupère les données et crée un objet Restaurant pour chaque restaurant
+    // récupère les données dans le fichier data et crée un objet Restaurant pour chaque restaurant
     data.forEach(data=>{
         restaurants.push(new Restaurant(data.identifiant,data.restaurantName, data.address, data.lat, data.long, data.ratings,""));       
     });
     console.log(restaurants);
-    restaurants.forEach(restaurant=>{
-        //restaurant.generateList();
-        // composant bootstrap pour la liste des restaurants     
-        restaurant.addCard();
-        // au clique sur lis le avis
-        $(`#${restaurant.identifiant}`).hide();
-        let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-        bouton.addEventListener('click', function(){
+    restaurants.forEach(restaurant=>{  
+        restaurant.addCard();  // composant bootstrap pour la liste des restaurants   
+
+        // au clique sur "lis les avis"
+        $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
             $(`.${restaurant.identifiant}`).hide();           
             $(`#${restaurant.identifiant}`).toggle();
+        })
 
-        });
-        // au clique sur ecris un avis
-        $(`.${restaurant.identifiant}`).hide();
-        let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
-        bouton2.addEventListener('click', function(){   
+        // au clique sur "ecris un avis"
+        $(`#addCommentBtn${restaurant.identifiant}`).on('click',()=>{
             $(`#${restaurant.identifiant}`).hide();        
             $(`.${restaurant.identifiant}`).toggle();
-        });
+        })
 
-        // marqueur à la position du restaurant
-        restaurant.addMarker();       
-        // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${restaurant.restaurantName}&nbsp;${restaurant.star}</h3>
-                        ${restaurant.commentHtml}`;
-        //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
-        var infoWindowOptions = {
-            content: content
-        };
-        var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-        google.maps.event.addListener(restaurant.marker, 'click', function() {
-            $("#addCommentModalLabel").text(restaurant.restaurantName);
-            infoWindow.open(map, restaurant.marker);
+        // marqueur et infowindow à la position du restaurant
+        restaurant.addMarker();     
+        restaurant.marker.addListener('click', ()=> {           
+            restaurant.infoWindow.open(map, restaurant.marker);
+
         });
     });
 
-    //// FILTER ////
+    //// FILTRER ////
     $('.filter-btn').click(function(){
         // récupère valeur des champs mini et maxi
         let noteMini= document.getElementById('noteMini');
@@ -251,34 +235,22 @@ function init(){
                     });
                     // marqueur à la position du restaurant
                     restaurant.addMarker();       
-                    // au clique sur le marqueur affiche une fenetre avec les avis
-                    let content=`<h3>${restaurant.restaurantName}</h3>
-                                    ${restaurant.commentHtml}`;
-                    content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
-                    var infoWindowOptions = {
-                        content: content
-                    };
-                    var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-                    google.maps.event.addListener(restaurant.marker, 'click', function() {
-                        $("#addCommentModalLabel").text(restaurant.restaurantName);
-                        infoWindow.open(map, restaurant.marker);
+                    restaurant.marker.addListener('click', ()=> {           
+                        restaurant.infoWindow.open(map, restaurant.marker);
                     });
                 } else {
                     console.log("n'affiche pas ce restaurant : "+ restaurant);
                     restaurant.marker.setMap(null);
                 }
             }) // fin for each            
-        }// fin else
-     
+        }// fin else     
     }); // fin $('.filter-btn').click
 
     //// AJOUT D'UN RESTAURANT ////
-    
-    // Configuration du click listener
-    map.addListener('click', function(mapsMouseEvent) {
+    map.addListener('dblclick', (mapsMouseEvent)=> { // au clique droit
         // Creation d'une fenetre avec les coordonnées du clique
         infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
-        infoWindow.setContent(`<button type="button" id="addRestaurantBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addRestaurantModal">Ajoutes un nouveau restaurant ici !</button>`);
+        infoWindow.setContent(`<button type="button" id="addRestaurantBtn" class="btn btn-light" data-toggle="modal" data-target="#addRestaurantModal">Ajoutes un nouveau restaurant ici !</button>`);
         // sauvegarde de la position
         let newRestLat = mapsMouseEvent.latLng.lat();
         let newRestLng = mapsMouseEvent.latLng.lng();
@@ -289,10 +261,6 @@ function init(){
         geocoder.geocode({'location': latlng}, function(results, status) {
             if (status === 'OK') {
             if (results[0]) {
-                let marker = new google.maps.Marker({
-                position: latlng,
-                map: map
-                });
                 // mettre dans champs Adresse l'adresse récupérée 
                 $('#adressToAdd').val(results[0].formatted_address);
                 newRestAddress=results[0].formatted_address;
@@ -304,11 +272,11 @@ function init(){
             window.alert('Geocoder failed due to: ' + status);
             }
         });
-        $('#newRestPublishBtn').click(function(){
-            let newRestName=$('#restToAdd').val();
-            //ajout des données dans le tableau des restaurants
+        $('#newRestPublishBtn').click(()=>{ //au clique sur le bouton publie
+            newRestName=$('#restToAdd').val();// récupère la valeur de l'input du nom
+            //créé un nouvel objet Restaurants
             let newRestaurantToPublish = new Restaurant(
-                this.id = (restaurants.length+1),
+                this.id = (restaurants.length),
                 this.restaurantName =newRestName,
                 this.address=newRestAddress,
                 this.lat=newRestLat,
@@ -317,122 +285,86 @@ function init(){
             );
             console.log(newRestaurantToPublish);
             console.log(restaurants);
-            restaurants.unshift(newRestaurantToPublish);// l'ajoute au début
-            console.log(restaurants);
-            // vide la liste des restaurants
-            //$('.result').empty();
-            //regénère la liste des restaurants
-            //restaurants.forEach(restaurant=>{            
-                // composant bootstrap pour la liste des restaurants     
-                restaurants[0].addCard();
-                $(`#${restaurants[0].identifiant}`).hide();
-                let bouton= document.getElementById(`readCommentBtn${restaurants[0].identifiant}`);
-                bouton.addEventListener('click', function(){
-                    $(`.${restaurants[0].identifiant}`).hide();           
-                    $(`#${restaurants[0].identifiant}`).toggle();
-                });
-                $(`.${restaurants[0].identifiant}`).hide();
-                let bouton2= document.getElementById(`addCommentBtn${restaurants[0].identifiant}`);
-                bouton2.addEventListener('click', function(){   
-                    $(`#${restaurants[0].identifiant}`).hide();        
-                    $(`.${restaurants[0].identifiant}`).toggle();
-                });
-                // marqueur à la position du restaurant
-                restaurants[0].addMarker();       
-                // au clique sur le marqueur affiche une fenetre avec les avis
-                let content=`<h3>${restaurants[0].restaurantName}&nbsp;  ${restaurants[0].star}</h3>;
-                            ${restaurants[0].commentHtml}`;
-                //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ecris un avis</button>`;
-                var infoWindowOptions = {
-                    content: content
-                };
-                var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-                google.maps.event.addListener(restaurants[0].marker, 'click', function() {
-                    $("#addCommentModalLabel").text(restaurants[0].restaurantName);
-                    infoWindow.open(map, restaurants[0].marker);
-                });
-            //})// fin for each
-            // rétablie la valeur par défault
-            //this.form.reset();
+            restaurants.push(newRestaurantToPublish);// l'ajoute au tableau des restaurants
+            console.log(restaurants); 
+            console.log(restaurants[restaurants.length-1]);                       
+            restaurants[restaurants.length-1].addCard(); // composant bootstrap pour la liste des restaurants
+
+            // au clique sur "lis les avis"
+            $(`#readCommentBtn${restaurants[restaurants.length-1].identifiant}`).on('click',()=>{
+                $(`.${restaurants[restaurants.length-1].identifiant}`).hide();           
+                $(`#${restaurants[restaurants.length-1].identifiant}`).toggle();
+            })
+
+            // au clique sur "ecris un avis"
+            $(`#addCommentBtn${restaurants[restaurants.length-1].identifiant}`).on('click',()=>{
+                $(`#${restaurants[restaurants.length-1].identifiant}`).hide();        
+                $(`.${restaurants[restaurants.length-1].identifiant}`).toggle();
+            })
+            
+            // marqueur à la position du restaurant
+            restaurants[restaurants.length-1].addMarker();       
+            restaurants[restaurants.length-1].marker.addListener('click', ()=> {           
+                restaurants[restaurants.length-1].infoWindow.open(map, restaurants[restaurants.length-1].marker);
+            });
+
+            // rétablie la valeur par défault de la modal
+            newRestName=$('#restToAdd').val("");
             //ferme le modal
             $('#addRestaurantModal').modal('hide');
+            // ferme infowindow
+            infoWindow.close();
         });// fin #newRestPublishBtn.click
+
     }); // fin map.addlistener
 
-    //// AJOUT D'UN NOUVEAU COMMENTAIRE ////
-    // clique sur le bouton publier
-    $('.publishCommentBtn').click(function(event){
-        console.log(event.target.id);
+    //// AJOUT D'UN NOUVEAU COMMENTAIRE ////    
+    $('.publishCommentBtn').click((event)=>{ // clique sur le bouton publier
+        let id=event.target.id-1; // je récupère l'id du bouton cliqué j'enlève 1 pour avoir son indice dans le tableau des rest
+        console.log(id);
         // récupération des données
-        console.log(restaurants);
-        let note= document.getElementById('note');
-        console.log(note);
-        let noteToPublish = note.options[note.selectedIndex].value;
+        let noteToPublish = $('.note').val();;
         let commentToPublish=$('.commentToAdd').val();
-        $('.note').prop('selectedIndex',0);
-      
- 
+        $('.note').prop('selectedIndex',0); //je réinitialise le select
         console.log(noteToPublish);
         console.log(commentToPublish);
         // vérification de la saisie
         
         // ajouter le commentaire à l'objet Restaurant        
-        for (let i=0;i<restaurants.length;i++){
-            if (restaurants[i].restaurantName==$("#addCommentModalLabel").text() || restaurants[i].identifiant==event.target.id){
-                console.log(noteToPublish,commentToPublish);
-                restaurants[i].addComment(noteToPublish,commentToPublish);
-                console.log(restaurants[i].ratings);
-                break;
-            }
-        }  
-        console.log('boucle');
-    // vide la liste des restaurants
-    $('.result').empty();
-    //regénère la liste des restaurants
-    restaurants.forEach(restaurant=>{            
+        restaurants[id].addComment(noteToPublish,commentToPublish);
+        console.log(restaurants[id].ratings);
+       
+        // vide la liste des restaurants
+        $('.result').empty();
+        //regénère la liste des restaurants
+        restaurants.forEach(restaurant=>{            
         
-        // composant bootstrap pour la liste des restaurants     
-        restaurant.addCard();
-        $(`#${restaurant.identifiant}`).hide();
-        let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-        bouton.addEventListener('click', function(){
-            $(`.${restaurant.identifiant}`).hide();           
-            $(`#${restaurant.identifiant}`).toggle();
-        });
-        $(`.${restaurant.identifiant}`).hide();
-        let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
-        bouton2.addEventListener('click', function(){   
-            $(`#${restaurant.identifiant}`).hide();        
-            $(`.${restaurant.identifiant}`).toggle();
-        });
-        // marqueur à la position du restaurant
-        restaurant.addMarker();       
-        // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${restaurant.restaurantName}</h3>`;
-        for(let i=0; i<restaurant.ratings.length; i++){
-            content += `<p>Note : ${restaurant.ratings[i].stars}</p>`
-            + `<p>Commentaire : ${restaurant.ratings[i].comment}</p>`
-        }
-        content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ecris un avis</button>`;
-        var infoWindowOptions = {
-            content: content
-        };
-        var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-        google.maps.event.addListener(restaurant.marker, 'click', function() {
-            $("#addCommentModalLabel").text(restaurant.restaurantName);
-            infoWindow.open(map, restaurant.marker);
-        });
-    })// fin for each      
-    // close modal
-    $('#addCommentModal').modal('hide');
-    // générer la carte a nouveau
+            // au clique sur "lis les avis"
+            $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
+                $(`.${restaurant.identifiant}`).hide();           
+                $(`#${restaurant.identifiant}`).toggle();
+            })
+    
+            // au clique sur "ecris un avis"
+            $(`#addCommentBtn${restaurant.identifiant}`).on('click',()=>{
+                $(`#${restaurant.identifiant}`).hide();        
+                $(`.${restaurant.identifiant}`).toggle();
+            })
+    
+            // marqueur et infowindow à la position du restaurant
+            restaurant.addMarker();     
+            restaurant.marker.addListener('click', ()=> {           
+                restaurant.infoWindow.open(map, restaurant.marker);
+    
+            });      
+        })// fin for each      
+        // close modal
+        //$('#addCommentModal').modal('hide');
+        // générer la carte a nouveau
 
     }); // fin $('#publishCommentBtn').click
 
 } // fin function init
-
-
-
 
 //rend la fonction init dans le scope global
 window.init=init;

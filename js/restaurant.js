@@ -1,5 +1,5 @@
 class Restaurant {
-    constructor (identifiant,restaurantName, address, lat, long,ratings,averageRating,position,marker, star,commentHtml){
+    constructor (identifiant,restaurantName, address, lat, long,ratings,averageRating,position,marker,infoWindow, star,commentHtml){
         this.identifiant=identifiant,
         this.restaurantName = restaurantName;
         this.address = address;
@@ -9,6 +9,7 @@ class Restaurant {
         this.averageRating = averageRating;
         this.position = position;
         this.marker=marker;
+        this.infoWindow=infoWindow;
         this.star=star;
         this.commentHtml= commentHtml;
         this.generateAverageRating()
@@ -27,7 +28,7 @@ class Restaurant {
                 sumRatings = sumRatings + this.ratings[i].stars;
             }
             this.averageRating=Math.round((sumRatings/(this.ratings.length))); 
-            console.log(this.averageRating);
+            //console.log(this.averageRating);
         }
         
     }
@@ -52,7 +53,7 @@ class Restaurant {
                 </div>  
                 <form class="${this.identifiant}">
                     <div class="form-group">
-                        <select id="note" class="note custom-select custom-select-sm">
+                        <select class="note custom-select custom-select-sm">
                             <option  selected>Note</option>
                             <option value="1">1 étoile</option>
                             <option value="2">2 étoiles</option>
@@ -73,7 +74,9 @@ class Restaurant {
         if (this.star==="<i><small>Aucun commentaire</small></i>"){
             $(`#readCommentBtn${this.identifiant}`).hide();
         }
-
+        // cache les sections "ajout d'un avis" et "lis les avis" par default
+        $(`#${this.identifiant}`).hide();
+        $(`.${this.identifiant}`).hide();
         
     }
     addMarker(){
@@ -85,6 +88,17 @@ class Restaurant {
             title: this.restaurantName
         }); 
         this.marker.setMap(map);
+        
+        // au clique sur le marqueur affiche une fenetre avec les avis
+        let content=`<h3>${this.restaurantName}&nbsp;${this.star}</h3>
+                        <p>${this.address}</p>
+                        ${this.commentHtml}`;
+        //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
+        let infoWindowOptions = {
+            content: content
+        };
+        this.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+ 
     }
     addComment(noteToPublish,commentToPublish){    
         this.ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
@@ -112,30 +126,8 @@ class Restaurant {
         }
         this.commentHtml=content;
     }
-/*     generateList(){           
-        // composant bootstrap pour la liste des restaurants     
-        this.addCard();
-        $(`#${this.identifiant}`).hide();
-        let bouton= document.getElementById(`readCommentBtn${this.identifiant}`);
-        bouton.addEventListener('click', function(){           
-            $(`#${this.identifiant}`).toggle();
-        });
-        // marqueur à la position du restaurant
-        this.addMarker();       
-        // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${this.restaurantName}</h3>
-                        ${this.commentHtml}`;
-        content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
-        var infoWindowOptions = {
-            content: content
-        };
-        var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-        google.maps.event.addListener(this.marker, 'click', function() {
-            $("#addCommentModalLabel").text(this.restaurantName);
-            infoWindow.open(map, this.marker);
-        });
+    
 
-    } */
     
 
 }
