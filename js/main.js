@@ -338,7 +338,7 @@ function init(){
         $('.result').empty();
         //regénère la liste des restaurants
         restaurants.forEach(restaurant=>{            
-        
+            restaurant.addCard();
             // au clique sur "lis les avis"
             $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
                 $(`.${restaurant.identifiant}`).hide();           
