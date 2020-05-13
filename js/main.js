@@ -179,14 +179,14 @@ function init(){
 
         // au clique sur "lis les avis"
         $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
-            $(`.${restaurant.identifiant}`).hide();           
-            $(`#${restaurant.identifiant}`).toggle();
+            $(`#addComment${restaurant.identifiant}`).hide();           
+            $(`#comment${restaurant.identifiant}`).toggle();
         })
 
         // au clique sur "ecris un avis"
         $(`#addCommentBtn${restaurant.identifiant}`).on('click',()=>{
-            $(`#${restaurant.identifiant}`).hide();        
-            $(`.${restaurant.identifiant}`).toggle();
+            $(`#comment${restaurant.identifiant}`).hide();        
+            $(`#addComment${restaurant.identifiant}`).toggle();
         })
 
         // marqueur et infowindow à la position du restaurant
@@ -319,36 +319,40 @@ function init(){
     }); // fin map.addlistener
 
     //// AJOUT D'UN NOUVEAU COMMENTAIRE ////    
-    $('.publishCommentBtn').click((event)=>{ // clique sur le bouton publier
-        let id=event.target.id-1; // je récupère l'id du bouton cliqué j'enlève 1 pour avoir son indice dans le tableau des rest
+    $('.result').on('click','.publishCommentBtn',(event)=>{ // clique sur le bouton publier
+        console.log('je clique sur le bouton publies')
+        let id=parseInt(event.target.id); // je récupère l'id du bouton cliqué j'enlève 1 pour avoir son indice dans le tableau des rest
         console.log(id);
         // récupération des données
-        let noteToPublish = $('.note').val();;
-        let commentToPublish=$('.commentToAdd').val();
-        $('.note').prop('selectedIndex',0); //je réinitialise le select
+        let noteToPublish = $('.note').eq(id-1).val();
+        let commentToPublish=$('.commentToAdd').eq(id-1).val();
+        
         console.log(noteToPublish);
         console.log(commentToPublish);
         // vérification de la saisie
         
         // ajouter le commentaire à l'objet Restaurant        
-        restaurants[id].addComment(noteToPublish,commentToPublish);
-        console.log(restaurants[id].ratings);
+        restaurants[id-1].ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
+        restaurants[id-1].generateAverageRating();
+        restaurants[id-1].generateCommentHtml();
+        restaurants[id-1].addStar(); 
        
         // vide la liste des restaurants
         $('.result').empty();
         //regénère la liste des restaurants
-        restaurants.forEach(restaurant=>{            
+        restaurants.forEach(restaurant=>{  
+          
             restaurant.addCard();
             // au clique sur "lis les avis"
             $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
-                $(`.${restaurant.identifiant}`).hide();           
-                $(`#${restaurant.identifiant}`).toggle();
+                $(`#addComment${restaurant.identifiant}`).hide();           
+                $(`#comment${restaurant.identifiant}`).toggle();
             })
     
             // au clique sur "ecris un avis"
             $(`#addCommentBtn${restaurant.identifiant}`).on('click',()=>{
-                $(`#${restaurant.identifiant}`).hide();        
-                $(`.${restaurant.identifiant}`).toggle();
+                $(`#addComment${restaurant.identifiant}`).toggle();        
+                $(`#comment${restaurant.identifiant}`).hide();
             })
     
             // marqueur et infowindow à la position du restaurant
@@ -358,13 +362,17 @@ function init(){
     
             });      
         })// fin for each      
+        
         // close modal
         //$('#addCommentModal').modal('hide');
-        // générer la carte a nouveau
+        //$('.publishCommentBtn').off('click',event);
 
     }); // fin $('#publishCommentBtn').click
 
+    
 } // fin function init
+
+    
 
 //rend la fonction init dans le scope global
 window.init=init;

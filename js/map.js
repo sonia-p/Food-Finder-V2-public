@@ -8,8 +8,10 @@ class GMap {
         
     }
     getUserPosition(){
+        const self = this;
         // geolocation du user
         if (navigator.geolocation) {
+            let infoWindow = new google.maps.InfoWindow;
             navigator.geolocation.getCurrentPosition((position)=> { 
             // récupération de la lat et long pour enregistrer la position
             this.position = {
@@ -17,16 +19,15 @@ class GMap {
                 lng: position.coords.longitude
             };
             map.setCenter(this.position);
-            let infoWindow = new google.maps.InfoWindow;
             infoWindow.setPosition(this.position);
             infoWindow.setContent('Tu es là !');
             infoWindow.open(map);              
             }, function() {
-            this.handleLocationError(true, infoWindow, this.GMap.getCenter());
+            self.handleLocationError(true, infoWindow, this.GMap.getCenter());
             });   
         } else {
             // Browser doesn't support Geolocation
-            this.handleLocationError(false, infoWindow, this.GMap.getCenter());
+            self.handleLocationError(false, infoWindow, this.GMap.getCenter());
             }
     }
     handleLocationError(browserHasGeolocation, infoWindow, pos) {

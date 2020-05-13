@@ -18,6 +18,7 @@ class Restaurant {
 
     }
     generateAverageRating(){
+        this.averageRating=0;
         // calcul la moyenne des notes
         console.log(this.restaurantName);
         console.log(this.ratings);
@@ -28,7 +29,7 @@ class Restaurant {
                 sumRatings = sumRatings + this.ratings[i].stars;
             }
             this.averageRating=Math.round((sumRatings/(this.ratings.length))); 
-            //console.log(this.averageRating);
+            console.log(this.averageRating);
         }
         
     }
@@ -48,10 +49,10 @@ class Restaurant {
                         </div>                       
                     </div>                   
                 </div>
-                <div id="${this.identifiant}" class="text-muted">
+                <div id="comment${this.identifiant}" class="text-muted">
                 ${this.commentHtml}
                 </div>  
-                <form class="${this.identifiant}">
+                <form id="addComment${this.identifiant}">
                     <div class="form-group">
                         <select class="note custom-select custom-select-sm">
                             <option  selected>Note</option>
@@ -75,8 +76,8 @@ class Restaurant {
             $(`#readCommentBtn${this.identifiant}`).hide();
         }
         // cache les sections "ajout d'un avis" et "lis les avis" par default
-        $(`#${this.identifiant}`).hide();
-        $(`.${this.identifiant}`).hide();
+        $(`#comment${this.identifiant}`).hide();
+        $(`#addComment${this.identifiant}`).hide();
         
     }
     addMarker(){
@@ -100,14 +101,18 @@ class Restaurant {
         this.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
  
     }
-    addComment(noteToPublish,commentToPublish){    
+    addComment(noteToPublish,commentToPublish){ 
+        console.log(this.averageRating);   
         this.ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
         this.generateAverageRating();
+        console.log(this.averageRating);
         this.generateCommentHtml();
+        console.log(this.star);
         this.addStar();  
         
     }
     addStar(){
+        //this.star="";
         if (this.averageRating>0){
             this.star="";
             for (let i=0; i<this.averageRating; i++){
