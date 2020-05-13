@@ -173,37 +173,12 @@ function init(){
     data.forEach(data=>{
         restaurants.push(new Restaurant(data.identifiant,data.restaurantName, data.address, data.lat, data.long, data.ratings,""));       
     });
-    console.log(restaurants);
-    restaurants.forEach(restaurant=>{  
-        restaurant.addCard();  // composant bootstrap pour la liste des restaurants   
-
-        // au clique sur "lis les avis"
-        $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
-            $(`#addComment${restaurant.identifiant}`).hide();           
-            $(`#comment${restaurant.identifiant}`).toggle();
-        })
-
-        // au clique sur "ecris un avis"
-        $(`#addCommentBtn${restaurant.identifiant}`).on('click',()=>{
-            $(`#comment${restaurant.identifiant}`).hide();        
-            $(`#addComment${restaurant.identifiant}`).toggle();
-        })
-
-        // marqueur et infowindow à la position du restaurant
-        restaurant.addMarker();     
-        restaurant.marker.addListener('click', ()=> {           
-            restaurant.infoWindow.open(map, restaurant.marker);
-
-        });
-    });
 
     //// FILTRER ////
     $('.filter-btn').click(function(){
         // récupère valeur des champs mini et maxi
-        let noteMini= document.getElementById('noteMini');
-        let mini = noteMini.options[noteMini.selectedIndex].value;
-        let noteMaxi= document.getElementById('noteMaxi');
-        let maxi = noteMaxi.options[noteMaxi.selectedIndex].value;
+        let mini= $('#noteMini').val();
+        let maxi= $('#noteMaxi').val();
         $('#noteMaxi').prop('selectedIndex',0);
         $('#noteMini').prop('selectedIndex',0);
         // message d'erreur si mauvaise sélection des notes
@@ -218,26 +193,9 @@ function init(){
                 // affiche les restaurants contenus dans la sélection
                 if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){                   
                     console.log("le restaurant va être affiché :" + restaurant);
-                    //restaurant.generateList();
-                    // composant bootstrap pour la liste des restaurants     
                     restaurant.addCard();
-                    $(`#${restaurant.identifiant}`).hide();
-                    let bouton= document.getElementById(`readCommentBtn${restaurant.identifiant}`);
-                    bouton.addEventListener('click', function(){
-                        $(`.${restaurant.identifiant}`).hide();           
-                        $(`#${restaurant.identifiant}`).toggle();
-                    });
-                    $(`.${restaurant.identifiant}`).hide();
-                    let bouton2= document.getElementById(`addCommentBtn${restaurant.identifiant}`);
-                    bouton2.addEventListener('click', function(){   
-                        $(`#${restaurant.identifiant}`).hide();        
-                        $(`.${restaurant.identifiant}`).toggle();
-                    });
-                    // marqueur à la position du restaurant
+                    // marqueur et infowindow à la position du restaurant
                     restaurant.addMarker();       
-                    restaurant.marker.addListener('click', ()=> {           
-                        restaurant.infoWindow.open(map, restaurant.marker);
-                    });
                 } else {
                     console.log("n'affiche pas ce restaurant : "+ restaurant);
                     restaurant.marker.setMap(null);
@@ -275,8 +233,9 @@ function init(){
         $('#newRestPublishBtn').click(()=>{ //au clique sur le bouton publie
             newRestName=$('#restToAdd').val();// récupère la valeur de l'input du nom
             //créé un nouvel objet Restaurants
+            console.log(restaurants.length);
             let newRestaurantToPublish = new Restaurant(
-                this.id = (restaurants.length),
+                this.id = (restaurants.length+1),
                 this.restaurantName =newRestName,
                 this.address=newRestAddress,
                 this.lat=newRestLat,
@@ -286,28 +245,7 @@ function init(){
             console.log(newRestaurantToPublish);
             console.log(restaurants);
             restaurants.push(newRestaurantToPublish);// l'ajoute au tableau des restaurants
-            console.log(restaurants); 
-            console.log(restaurants[restaurants.length-1]);                       
-            restaurants[restaurants.length-1].addCard(); // composant bootstrap pour la liste des restaurants
-
-            // au clique sur "lis les avis"
-            $(`#readCommentBtn${restaurants[restaurants.length-1].identifiant}`).on('click',()=>{
-                $(`.${restaurants[restaurants.length-1].identifiant}`).hide();           
-                $(`#${restaurants[restaurants.length-1].identifiant}`).toggle();
-            })
-
-            // au clique sur "ecris un avis"
-            $(`#addCommentBtn${restaurants[restaurants.length-1].identifiant}`).on('click',()=>{
-                $(`#${restaurants[restaurants.length-1].identifiant}`).hide();        
-                $(`.${restaurants[restaurants.length-1].identifiant}`).toggle();
-            })
-            
-            // marqueur à la position du restaurant
-            restaurants[restaurants.length-1].addMarker();       
-            restaurants[restaurants.length-1].marker.addListener('click', ()=> {           
-                restaurants[restaurants.length-1].infoWindow.open(map, restaurants[restaurants.length-1].marker);
-            });
-
+                     
             // rétablie la valeur par défault de la modal
             newRestName=$('#restToAdd').val("");
             //ferme le modal
@@ -315,8 +253,7 @@ function init(){
             // ferme infowindow
             infoWindow.close();
         });// fin #newRestPublishBtn.click
-
-    }); // fin map.addlistener
+    }); // fin map.addlistener ajout d'un restau
 
     //// AJOUT D'UN NOUVEAU COMMENTAIRE ////    
     $('.result').on('click','.publishCommentBtn',(event)=>{ // clique sur le bouton publier
@@ -340,27 +277,10 @@ function init(){
         // vide la liste des restaurants
         $('.result').empty();
         //regénère la liste des restaurants
-        restaurants.forEach(restaurant=>{  
-          
-            restaurant.addCard();
-            // au clique sur "lis les avis"
-            $(`#readCommentBtn${restaurant.identifiant}`).on('click',()=>{
-                $(`#addComment${restaurant.identifiant}`).hide();           
-                $(`#comment${restaurant.identifiant}`).toggle();
-            })
-    
-            // au clique sur "ecris un avis"
-            $(`#addCommentBtn${restaurant.identifiant}`).on('click',()=>{
-                $(`#addComment${restaurant.identifiant}`).toggle();        
-                $(`#comment${restaurant.identifiant}`).hide();
-            })
-    
+        restaurants.forEach(restaurant=>{            
+            restaurant.addCard();    
             // marqueur et infowindow à la position du restaurant
-            restaurant.addMarker();     
-            restaurant.marker.addListener('click', ()=> {           
-                restaurant.infoWindow.open(map, restaurant.marker);
-    
-            });      
+            restaurant.addMarker();       
         })// fin for each      
         
         // close modal

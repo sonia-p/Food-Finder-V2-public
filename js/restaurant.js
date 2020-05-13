@@ -15,6 +15,8 @@ class Restaurant {
         this.generateAverageRating()
         this.addStar()
         this.generateCommentHtml()
+        this.addCard()
+        this.addMarker()
 
     }
     generateAverageRating(){
@@ -78,6 +80,19 @@ class Restaurant {
         // cache les sections "ajout d'un avis" et "lis les avis" par default
         $(`#comment${this.identifiant}`).hide();
         $(`#addComment${this.identifiant}`).hide();
+        // au clique sur "lis les avis"
+        $(`#readCommentBtn${this.identifiant}`).on('click',()=>{
+            $(`#addComment${this.identifiant}`).hide();           
+            $(`#comment${this.identifiant}`).toggle();
+        })
+
+        // au clique sur "ecris un avis"
+        $(`#addCommentBtn${this.identifiant}`).on('click',()=>{
+            $(`#comment${this.identifiant}`).hide();        
+            $(`#addComment${this.identifiant}`).toggle();
+        })
+        
+
         
     }
     addMarker(){
@@ -99,7 +114,11 @@ class Restaurant {
             content: content
         };
         this.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
- 
+        // marqueur et infowindow à la position du restaurant
+        this.marker.addListener('click', ()=> {           
+            this.infoWindow.open(map, this.marker);
+
+        });
     }
     addComment(noteToPublish,commentToPublish){ 
         console.log(this.averageRating);   
