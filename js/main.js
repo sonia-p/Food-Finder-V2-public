@@ -3,7 +3,7 @@ function loadScript(){
     var script = document.createElement("script");
     script.async= true;
     script.defer=true;
-    script.src=`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=init` ;
+    script.src=`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=init` ;
     document.body.appendChild(script);
 } 
 
@@ -169,10 +169,34 @@ function init(){
         ]
     });
 
-    // récupère les données dans le fichier data et crée un objet Restaurant pour chaque restaurant
-    data.forEach(data=>{
-        restaurants.push(new Restaurant(data.identifiant,data.restaurantName, data.address, data.lat, data.long, data.ratings,""));       
-    });
+    let userPosition = new google.maps.LatLng(myMap.lat,myMap.lng);
+    let request = {
+        location: userPosition,
+        radius: '2000',
+        //query: 'restaurant',
+        type: ['restaurant']
+      };
+    
+    let service = new google.maps.places.PlacesService(map);
+    // récupère les données dans la variable result et crée un objet Restaurant pour chaque restaurant 
+    service.nearbySearch(request, callback); //Nearby Search returns a list of nearby places based on a user's location.
+    function callback(results, status) {
+        console.log(results);
+        console.log(results.length);
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+                for (var i = 0; i < results.length; i++) {
+                    service.getDetails({ //Place Details requests return more detailed information about a specific place, including user reviews.
+                        placeId: results[i].place_id,
+                        fields: ['name', 'rating', 'user_ratings_total', 'opening_hours', 'photo', 'place_id', 'formatted_address', 'type',
+                            'geometry', 'review']
+                    },(res) => {
+                            if (res){
+                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(), res.reviews,""));
+                            }                            
+                        });  
+                }// fin for
+        }// fin if
+    }// fin callback
 
     //// FILTRER ////
     $('.filter-btn').click(function(){
@@ -268,11 +292,15 @@ function init(){
         console.log(commentToPublish);
         // vérification de la saisie
         
+
         // ajouter le commentaire à l'objet Restaurant        
-        restaurants[id-1].ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
-        restaurants[id-1].generateAverageRating();
+        restaurants[id].addComment(noteToPublish,commentToPublish);
+        console.log(restaurants[id].ratings);
+                
+        //restaurants[id-1].ratings.unshift({"rating":parseInt(noteToPublish),"text":commentToPublish});
+        /* restaurants[id-1].generateAverageRating();
         restaurants[id-1].generateCommentHtml();
-        restaurants[id-1].addStar(); 
+        restaurants[id-1].addStar();  */
        
         // vide la liste des restaurants
         $('.result').empty();

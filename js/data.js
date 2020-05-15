@@ -1,4 +1,4 @@
-let data=[
+/* let data=[
    {
       "identifiant":1,
       "restaurantName" :"La Table Des Platanes",
@@ -75,3 +75,4 @@ let data=[
       ]
    }
 ];
+ */

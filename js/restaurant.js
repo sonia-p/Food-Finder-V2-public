@@ -20,15 +20,16 @@ class Restaurant {
 
     }
     generateAverageRating(){
-        this.averageRating=0;
+        //console.log(!!this.ratings.length);
+        //this.averageRating=0;
         // calcul la moyenne des notes
-        console.log(this.restaurantName);
+        console.log(this);
         console.log(this.ratings);
-        console.log(!!this.ratings.length);
+        
         if(!!this.ratings.length){
             let sumRatings=0;
             for(let i=0; i< this.ratings.length; i++){
-                sumRatings = sumRatings + this.ratings[i].stars;
+                sumRatings = sumRatings + this.ratings[i].rating;
             }
             this.averageRating=Math.round((sumRatings/(this.ratings.length))); 
             console.log(this.averageRating);
@@ -122,7 +123,7 @@ class Restaurant {
     }
     addComment(noteToPublish,commentToPublish){ 
         console.log(this.averageRating);   
-        this.ratings.unshift({"stars":parseInt(noteToPublish),"comment":commentToPublish});
+        this.ratings.unshift({"rating":parseInt(noteToPublish),"text":commentToPublish});
         this.generateAverageRating();
         console.log(this.averageRating);
         this.generateCommentHtml();
@@ -145,8 +146,8 @@ class Restaurant {
     generateCommentHtml(){
         let content="";
         for(let i=0; i<this.ratings.length; i++){
-            content += `<p>Note : ${this.ratings[i].stars}</p>`
-            + `<p>Commentaire : ${this.ratings[i].comment}</p>`
+            content += `<p>Pseudo : ${this.ratings[i].author_name}&nbsp;&nbsp; ${this.ratings[i].relative_time_description}</p><p>Note : ${this.ratings[i].rating}</p>`
+            + `<p>Commentaire : ${this.ratings[i].text}</p>`
         }
         this.commentHtml=content;
     }
