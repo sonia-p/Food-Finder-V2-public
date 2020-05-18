@@ -14,6 +14,7 @@ let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
 
 //initialise la carte
 function init(){
+    $('#pano').hide();
     let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
@@ -191,8 +192,11 @@ function init(){
                             'geometry', 'review']
                     },(res) => {
                             if (res){
-                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(), res.reviews,""));
-                            }                            
+                                console.log(res);
+                                console.log(res.photos[0].getUrl());
+                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(),res.open_now, res.reviews,""));
+                            }       
+                                                 
                         });  
                 }// fin for
         }// fin if
@@ -232,7 +236,7 @@ function init(){
     map.addListener('dblclick', (mapsMouseEvent)=> { // au clique droit
         // Creation d'une fenetre avec les coordonnées du clique
         infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
-        infoWindow.setContent(`<button type="button" id="addRestaurantBtn" class="btn btn-light" data-toggle="modal" data-target="#addRestaurantModal">Ajoutes un nouveau restaurant ici !</button>`);
+        infoWindow.setContent(`<button type="button" id="addRestaurantBtn" class="btn btn-light" data-toggle="modal" data-target="#addRestaurantModal">Ajouter un nouveau restaurant ici !</button>`);
         // sauvegarde de la position
         let newRestLat = mapsMouseEvent.latLng.lat();
         let newRestLng = mapsMouseEvent.latLng.lng();

@@ -1,10 +1,12 @@
 class Restaurant {
-    constructor (identifiant,restaurantName, address, lat, long,ratings,averageRating,position,marker,infoWindow, star,commentHtml){
+    constructor (identifiant,restaurantName, address, lat, long,picture, open, ratings,averageRating,position,marker,infoWindow, star,commentHtml){
         this.identifiant=identifiant,
         this.restaurantName = restaurantName;
         this.address = address;
         this.lat = lat;
         this.long= long;
+        this.picture= picture,
+        this.open= open,
         this.ratings = ratings;
         this.averageRating = averageRating;
         this.position = position;
@@ -37,18 +39,20 @@ class Restaurant {
         
     }
     addCard(){
+        console.log(this.picture);
         $('.result').append(`
             <div class="card mb-3">
                 <div class="row no-gutters">
                     <div class="col-xs-4 col-sm-4 col-md-4">
-                    <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">
+                    <img src="${this.picture}" class="card-img" alt="image google street view">                   
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <div  class="card-body">
-                            <h5 class="card-title">${this.restaurantName}&nbsp;  ${this.star}</h5>
+                            <h5 class="card-title">${this.restaurantName}</h5>
+                            <p class="card-text">${this.star}</p>
                             <p class="card-text">${this.address}</p>
-                            <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lis les avis</button> 
-                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecris un avis</button>                                     
+                            <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lire les avis</button> 
+                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecrire un avis</button>                                     
                         </div>                       
                     </div>                   
                 </div>
@@ -107,9 +111,19 @@ class Restaurant {
         this.marker.setMap(map);
         
         // au clique sur le marqueur affiche une fenetre avec les avis
-        let content=`<h3>${this.restaurantName}&nbsp;${this.star}</h3>
-                        <p>${this.address}</p>
-                        ${this.commentHtml}`;
+        let content=
+        `<div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <img src="${this.picture}"  class="card-img" alt="image google street view">                   
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <h6>${this.restaurantName}</h6>
+            <p>${this.star}</p>
+            <p>${this.address}</p>
+        
+            </div>    </div>`
+        
+                       // ${this.commentHtml};
         //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
         let infoWindowOptions = {
             content: content
@@ -146,8 +160,8 @@ class Restaurant {
     generateCommentHtml(){
         let content="";
         for(let i=0; i<this.ratings.length; i++){
-            content += `<p>Pseudo : ${this.ratings[i].author_name}&nbsp;&nbsp; ${this.ratings[i].relative_time_description}</p><p>Note : ${this.ratings[i].rating}</p>`
-            + `<p>Commentaire : ${this.ratings[i].text}</p>`
+            content += `<p><b>${this.ratings[i].author_name}</b>&nbsp;&nbsp;Note : ${this.ratings[i].rating}&nbsp;&nbsp;<small><i> ${this.ratings[i].relative_time_description}</small></i></p>`
+            + `<p>${this.ratings[i].text}<hr></p>`
         }
         this.commentHtml=content;
     }
