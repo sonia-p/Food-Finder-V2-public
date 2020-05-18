@@ -7,7 +7,7 @@ class Restaurant {
         this.long= long;
         this.picture= picture,
         this.open= open,
-        this.ratings = ratings;
+        this.ratings = [];
         this.averageRating = averageRating;
         this.position = position;
         this.marker=marker;
@@ -53,7 +53,7 @@ class Restaurant {
                             <p class="card-text">${this.address}</p>
                             <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lire les avis</button> 
                             <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecrire un avis</button>      
-                            <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-light">Visiter</button>                               
+                            <button type="button" id="${this.identifiant}" class="btn btn-light">Visiter</button>                               
                         </div>                       
                     </div>                   
                 </div>

@@ -275,7 +275,7 @@ function init(){
                 this.address=newRestAddress,
                 this.lat=newRestLat,
                 this.long=newRestLng,
-                this.ratings=[]
+                this.picture=`https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view`
             );
             console.log(newRestaurantToPublish);
             console.log(restaurants);
