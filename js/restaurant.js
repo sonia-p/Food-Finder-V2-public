@@ -19,6 +19,7 @@ class Restaurant {
         this.generateCommentHtml()
         this.addCard()
         this.addMarker()
+        this.clusterMarker()
 
     }
     generateAverageRating(){
@@ -113,22 +114,22 @@ class Restaurant {
             title: this.restaurantName
         }); 
         this.marker.setMap(map);
-        
+        markers.push(this.marker);
+
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=
         `<div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
-            <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">                   
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
-            <h6>${this.restaurantName}</h6>
-            <p>${this.star}</p>
-            <p>${this.address}</p>
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">                   
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <h6>${this.restaurantName}</h6>
+                <p>${this.star}</p>
+                <p>${this.address}</p>
+            </div>    
+        </div>`
+
         
-            </div>    </div>`
-        
-                       // ${this.commentHtml};
-        //content += `<button type="button" id="addCommentBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addCommentModal">Ajouter un avis</button>`;
         let infoWindowOptions = {
             content: content
         };
@@ -137,6 +138,14 @@ class Restaurant {
         this.marker.addListener('click', ()=> {           
             this.infoWindow.open(map, this.marker);
 
+        });
+    }
+    clusterMarker(){
+        // rassemblement de marqueurs
+        let markerCluster = new MarkerClusterer(map, markers,
+            {
+            maxZoom: 15, // Zoom maxi quand le regroupement s'arrête
+            imagePath: '../images/m'
         });
     }
     addComment(noteToPublish,commentToPublish){ 

@@ -11,12 +11,12 @@ function loadScript(){
 window.onload = loadScript;
 let restaurants=[];
 let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
-
+let markers = [];
 //initialise la carte
 function init(){
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
+    let myMap= new GMap(map,13, 43.6833,4.2); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
@@ -174,7 +174,7 @@ function init(){
     let userPosition = new google.maps.LatLng(myMap.lat,myMap.lng);
     let request = {
         location: userPosition,
-        radius: '2000',
+        radius: '3000',
         //query: 'restaurant',
         type: ['restaurant']
       };
@@ -201,8 +201,9 @@ function init(){
                         });  
                 }// fin for
         }// fin if
-    }// fin callback
 
+    }// fin callback
+    //myMap.clusterMarker();
     //// FILTRER ////
     $('.filter-btn').click(function(){
         // récupère valeur des champs mini et maxi

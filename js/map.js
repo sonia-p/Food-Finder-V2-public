@@ -37,5 +37,7 @@ class GMap {
         'Error: Your browser doesn\'t support geolocation.');
     infoWindow.open(map);
     }
+
 } 
+
 
