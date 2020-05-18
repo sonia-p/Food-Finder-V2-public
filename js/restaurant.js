@@ -52,7 +52,8 @@ class Restaurant {
                             <p class="card-text">${this.star}</p>
                             <p class="card-text">${this.address}</p>
                             <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lire les avis</button> 
-                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecrire un avis</button>                                     
+                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecrire un avis</button>      
+                            <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-light">Visiter</button>                               
                         </div>                       
                     </div>                   
                 </div>
@@ -74,7 +75,7 @@ class Restaurant {
                         <textarea class="commentToAdd form-control" rows="3" placeholder="Commentaire"></textarea>
                     </div>
                     <div class="form-group">
-                        <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-light">Publies</button>
+                        <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-light">Publier</button>
                     </div>
                 </form>
             </div>
@@ -97,7 +98,10 @@ class Restaurant {
             $(`#addComment${this.identifiant}`).toggle();
         })
         
-
+        // au clique sur visiter
+        $(`#${this.identifiant}`).on('click',()=>{
+            this.generatePanorama();
+        });
         
     }
     addMarker(){
@@ -114,7 +118,7 @@ class Restaurant {
         let content=
         `<div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
-            <img src="${this.picture}"  class="card-img" alt="image google street view">                   
+            <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">                   
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6">
             <h6>${this.restaurantName}</h6>
@@ -165,7 +169,27 @@ class Restaurant {
         }
         this.commentHtml=content;
     }
-    
+    generatePanorama(){
+        let pano= new google.maps.StreetViewPanorama(document.getElementById('pano'),{
+            position: {lat: this.lat, lng: this.long},
+            pov: {
+                heading: 34,
+                pitch: 10
+              }
+        });
+        pano.setPosition({lat: this.lat, lng: this.long});
+        $('#map').hide();
+        $('#pano').show();
+        $('#backToMapBtn').show();
+        $('#resetMapBtn').hide();
+        $('#backToMapBtn').on('click',()=>{
+            $('#pano').hide();
+            $('#map').show();
+            $('#resetMapBtn').show();
+            $('#backToMapBtn').hide();
+        });
+
+    }
 
     
 

@@ -15,6 +15,7 @@ let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
 //initialise la carte
 function init(){
     $('#pano').hide();
+    $('#backToMapBtn').hide();
     let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
@@ -229,9 +230,15 @@ function init(){
                     restaurant.marker.setMap(null);
                 }
             }) // fin for each            
-        }// fin else     
-    }); // fin $('.filter-btn').click
+        }// fin else  
 
+    }); // fin $('.filter-btn').click
+    $('#resetMapBtn').on('click',()=>{
+        restaurants.forEach(restaurant=>{            
+                restaurant.addCard();
+                restaurant.addMarker();       
+        }) // fin for each   
+    })
     //// AJOUT D'UN RESTAURANT ////
     map.addListener('dblclick', (mapsMouseEvent)=> { // au clique droit
         // Creation d'une fenetre avec les coordonnées du clique

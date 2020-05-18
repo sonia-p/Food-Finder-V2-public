@@ -44,7 +44,22 @@ h1 {
     position: sticky;
     left: 0;
     top: 0;
-  }
+}
+#pano {
+    height:100%;
+    width: 100%;
+    position: sticky;
+    left: 0;
+    top: 0;
+}
+#resetMapBtn, #backToMapBtn{
+    position : absolute;
+    z-index : 10;
+    left: calc(25% - 75px);
+    top : 10 px;
+    width : 150px
+
+}
  .card-img{
     width:175px ;
     
