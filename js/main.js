@@ -16,7 +16,7 @@ let markers = [];
 function init(){
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,13, 43.6833,4.2); // créer un objet GMap    
+    let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
@@ -194,8 +194,7 @@ function init(){
                     },(res) => {
                             if (res){
                                 console.log(res);
-                                console.log(res.photos[0].getUrl());
-                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(),res.open_now, res.reviews,""));
+                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(), res.reviews));
                             }       
                                                  
                         });  
@@ -267,27 +266,37 @@ function init(){
             }
         });
         $('#newRestPublishBtn').click(()=>{ //au clique sur le bouton publie
-            newRestName=$('#restToAdd').val();// récupère la valeur de l'input du nom
-            //créé un nouvel objet Restaurants
-            console.log(restaurants.length);
-            let newRestaurantToPublish = new Restaurant(
-                this.id = (restaurants.length+1),
-                this.restaurantName =newRestName,
-                this.address=newRestAddress,
-                this.lat=newRestLat,
-                this.long=newRestLng,
-                this.picture=`https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view`
-            );
-            console.log(newRestaurantToPublish);
-            console.log(restaurants);
-            restaurants.push(newRestaurantToPublish);// l'ajoute au tableau des restaurants
-                     
-            // rétablie la valeur par défault de la modal
-            newRestName=$('#restToAdd').val("");
-            //ferme le modal
-            $('#addRestaurantModal').modal('hide');
-            // ferme infowindow
-            infoWindow.close();
+            
+            
+            if ($('#restToAdd').val().length<=0){
+                event.preventDefault();
+                event.stopPropagation();
+                $(`#addRestaurantModal`).addClass('was-validated')
+            } else {
+                newRestName=$('#restToAdd').val();// récupère la valeur de l'input du nom
+                //créé un nouvel objet Restaurants
+                console.log(restaurants.length);
+                let newRestaurantToPublish = new Restaurant(
+                    this.id = (restaurants.length+1),
+                    this.restaurantName =newRestName,
+                    this.address=newRestAddress,
+                    this.lat=newRestLat,
+                    this.long=newRestLng,
+                    this.picture=`https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view`,
+                    ratings=[]
+                );
+                console.log(newRestaurantToPublish);
+                console.log(restaurants);
+                restaurants.push(newRestaurantToPublish);// l'ajoute au tableau des restaurants
+                        
+                // rétablie la valeur par défault de la modal
+                newRestName=$('#restToAdd').val("");
+                //ferme le modal
+                $('#addRestaurantModal').modal('hide');
+                // ferme infowindow
+                infoWindow.close();
+            }
+            
         });// fin #newRestPublishBtn.click
     }); // fin map.addlistener ajout d'un restau
 
@@ -296,32 +305,47 @@ function init(){
         console.log('je clique sur le bouton publies')
         let id=parseInt(event.target.id); // je récupère l'id du bouton cliqué j'enlève 1 pour avoir son indice dans le tableau des rest
         console.log(id);
-        // récupération des données
-        let noteToPublish = $('.note').eq(id-1).val();
-        let commentToPublish=$('.commentToAdd').eq(id-1).val();
-        
-        console.log(noteToPublish);
-        console.log(commentToPublish);
-        // vérification de la saisie
-        
+        console.log($('#validationCustom01').val().length<=0);
+        console.log($('#validationCustom01').val().length);
+        console.log($('#validationCustom01').val());
+        console.log($('#validationCustom03').val().length<=0);
+        console.log($('#validationCustom03').val().length);
+        console.log($('#validationCustom03').val());
+        console.log($('#validationCustom02').val() == 'Note');
+        console.log($('#validationCustom02').val());
 
-        // ajouter le commentaire à l'objet Restaurant        
-        restaurants[id].addComment(noteToPublish,commentToPublish);
-        console.log(restaurants[id].ratings);
-                
-        //restaurants[id-1].ratings.unshift({"rating":parseInt(noteToPublish),"text":commentToPublish});
-        /* restaurants[id-1].generateAverageRating();
-        restaurants[id-1].generateCommentHtml();
-        restaurants[id-1].addStar();  */
-       
-        // vide la liste des restaurants
-        $('.result').empty();
-        //regénère la liste des restaurants
-        restaurants.forEach(restaurant=>{            
-            restaurant.addCard();    
-            // marqueur et infowindow à la position du restaurant
-            restaurant.addMarker();       
-        })// fin for each      
+        $(`#addComment${id}`).addClass('was-validated');
+        // vérification de la saisie
+        if ($('#validationCustom01').val().length<=0 || $('#validationCustom02').val().length== 'Note' || $('#validationCustom03').val()<=0 ){
+            console.log('je ne valide pas le form');
+            event.preventDefault();
+            event.stopPropagation();
+            
+            //$('#validationCustom01').addClass('invalid');
+            //$('#validationCustom02').addClass('invalid');
+            //$('#validationCustom03').addClass('invalid');
+        } else {
+            // récupération des données
+            let noteToPublish = $('.note').eq(id-1).val();
+            let commentToPublish=$('.commentToAdd').eq(id-1).val();
+            let pseudoToPublish=$('.pseudo').eq(id-1).val();
+            console.log(noteToPublish);
+            console.log(commentToPublish);
+
+
+            // ajouter le commentaire à l'objet Restaurant        
+            restaurants[id-1].addComment(noteToPublish,commentToPublish,pseudoToPublish);
+            console.log(restaurants[id-1].ratings);
+            // vide la liste des restaurants
+            $('.result').empty();
+            //regénère la liste des restaurants
+            restaurants.forEach(restaurant=>{           
+                restaurant.addCard();    
+                // marqueur et infowindow à la position du restaurant
+                restaurant.addMarker();       
+            })// fin for each      
+        }
+        
         
         // close modal
         //$('#addCommentModal').modal('hide');

@@ -1,13 +1,12 @@
 class Restaurant {
-    constructor (identifiant,restaurantName, address, lat, long,picture, open, ratings,averageRating,position,marker,infoWindow, star,commentHtml){
+    constructor (identifiant,restaurantName, address, lat, long,picture, ratings,averageRating,position,marker,infoWindow, star,commentHtml){
         this.identifiant=identifiant,
         this.restaurantName = restaurantName;
         this.address = address;
         this.lat = lat;
         this.long= long;
         this.picture= picture,
-        this.open= open,
-        this.ratings = [];
+        this.ratings = ratings;
         this.averageRating = averageRating;
         this.position = position;
         this.marker=marker;
@@ -20,27 +19,21 @@ class Restaurant {
         this.addCard()
         this.addMarker()
         this.clusterMarker()
-
+        this.boundsMarker()
     }
     generateAverageRating(){
-        //console.log(!!this.ratings.length);
-        //this.averageRating=0;
-        // calcul la moyenne des notes
-        console.log(this);
-        console.log(this.ratings);
-        
+       // console.log(this.ratings);   
         if(!!this.ratings.length){
             let sumRatings=0;
             for(let i=0; i< this.ratings.length; i++){
                 sumRatings = sumRatings + this.ratings[i].rating;
             }
             this.averageRating=Math.round((sumRatings/(this.ratings.length))); 
-            console.log(this.averageRating);
-        }
-        
+            //console.log(this.averageRating);
+        }     
+        //console.log(this.averageRating);   
     }
     addCard(){
-        console.log(this.picture);
         $('.result').append(`
             <div class="card mb-3">
                 <div class="row no-gutters">
@@ -58,23 +51,41 @@ class Restaurant {
                         </div>                       
                     </div>                   
                 </div>
-                <div id="comment${this.identifiant}" class="text-muted">
+                <div id="comment${this.identifiant}" class="commentList text-muted">
                 ${this.commentHtml}
                 </div>  
-                <form id="addComment${this.identifiant}">
-                    <div class="form-group">
-                        <select class="note custom-select custom-select-sm">
-                            <option  selected>Note</option>
-                            <option value="1">1 étoile</option>
-                            <option value="2">2 étoiles</option>
-                            <option value="3">3 étoiles</option>
-                            <option value="4">4 étoiles</option>
-                            <option value="5">5 étoiles</option>
-                        </select>
+                <form id="addComment${this.identifiant}" class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-8 mb-9">
+                            <input type="text" class="pseudo form-control input-sm" id="validationCustom01" placeholder="Pseudo" required>
+                            <div class="valid-feedback">Ok !</div>
+                            <div class="invalid-feedback">
+                            Tu dois saisir un pseudo !
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <select class="note custom-select" id="validationCustom02" required>
+                                <option  value="" selected>Note</option>
+                                <option value="1">1 étoile</option>
+                                <option value="2">2 étoiles</option>
+                                <option value="3">3 étoiles</option>
+                                <option value="4">4 étoiles</option>
+                                <option value="5">5 étoiles</option>
+                            </select>
+                            <div class="valid-feedback">Ok !</div>
+                            <div class="invalid-feedback">
+                                Tu dois saisir une note !
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <textarea class="commentToAdd form-control" rows="3" placeholder="Commentaire"></textarea>
+                        <textarea class="commentToAdd form-control" id="validationCustom03" rows="3" placeholder="Commentaire" required></textarea>
+                        <div class="valid-feedback">Ok !</div>
+                        <div class="invalid-feedback">
+                        Tu dois saisir un commentaire !
+                        </div>
                     </div>
+
                     <div class="form-group">
                         <button type="button" id="${this.identifiant}" class="publishCommentBtn btn btn-light">Publier</button>
                     </div>
@@ -148,13 +159,22 @@ class Restaurant {
             imagePath: '../images/m'
         });
     }
-    addComment(noteToPublish,commentToPublish){ 
-        console.log(this.averageRating);   
-        this.ratings.unshift({"rating":parseInt(noteToPublish),"text":commentToPublish});
+    boundsMarker(){
+        let bounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < markers.length; ++i) {
+            bounds.extend(markers[i].position);
+        }
+        map.fitBounds(bounds);
+    }
+    addComment(noteToPublish,commentToPublish,pseudoToPublish){ 
+
+        //console.log(this.averageRating);   
+        this.ratings.unshift({"author_name":pseudoToPublish,"rating":parseInt(noteToPublish),"relative_time_description":Date.now(),"text":commentToPublish,"relative_time_description":"aujourd'hui"});
+        console.log(this.ratings);
         this.generateAverageRating();
-        console.log(this.averageRating);
+        //console.log(this.averageRating);
         this.generateCommentHtml();
-        console.log(this.star);
+        console.log(this.commentHtml);
         this.addStar();  
         
     }

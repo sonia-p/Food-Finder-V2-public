@@ -60,9 +60,13 @@ h1 {
     width : 150px;
     
 }
- .card-img{
-    width:175px ;
-    
+.card {
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.card-img{
+    width:175px ;  
 } 
 .list{
     padding: 10px;
@@ -77,6 +81,9 @@ h1 {
     height:50px;
     padding:10px;
     margin:10px;
+}
+.commentList{
+    overflow-y: auto; /* scrollbar */
 }
 /* Ajustements de mise en page en fonction de la taille de l'écran */
 /* Small devices & Medium devices (landscape phones, tablets, 768px and less) */
