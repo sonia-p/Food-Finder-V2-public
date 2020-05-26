@@ -55,8 +55,7 @@ h1 {
 #resetMapBtn, #backToMapBtn{
     position : absolute;
     z-index : 10;
-    left: calc(50% - 75px);
-    top : 10 px;
+    left: 25%;
     width : 150px;
     
 }
@@ -86,6 +85,25 @@ h1 {
     overflow-y: auto; /* scrollbar */
 }
 /* Ajustements de mise en page en fonction de la taille de l'écran */
+/* ----------- iPhone 6, 6S, 7 and 8 ----------- */
+ 
+/* Portrait */
+ 
+@media only screen and (min-width: 375px) and (max-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    #resetMapBtn, #backToMapBtn{
+        left: 50%;
+    }
+}
+ 
+/* Landscape */
+ 
+@media only screen and (min-width: 375px) and (max-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+    #resetMapBtn, #backToMapBtn{
+        left: 75%;
+    }
+}
+
+
 /* Small devices & Medium devices (landscape phones, tablets, 768px and less) */
 @media (max-width: 768px) {
     header {
@@ -96,6 +114,9 @@ h1 {
     }
     header figure img {
         height: 80px;
+    }
+    #resetMapBtn, #backToMapBtn{
+        left:50%;
     }
     #dropdownMenu2, button, .card-text {
         font-size: 12px;

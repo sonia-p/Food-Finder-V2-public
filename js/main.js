@@ -16,7 +16,7 @@ let markers = [];
 function init(){
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
+    let myMap= new GMap(map,18, 43.6833,4.2); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
