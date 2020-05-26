@@ -126,7 +126,6 @@ class Restaurant {
         }); 
         this.marker.setMap(map);
         markers.push(this.marker);
-
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=
         `<div class="row">
@@ -140,7 +139,6 @@ class Restaurant {
             </div>    
         </div>`
 
-        
         let infoWindowOptions = {
             content: content
         };
@@ -158,7 +156,8 @@ class Restaurant {
             maxZoom: 15, // Zoom maxi quand le regroupement s'arrête
             imagePath: '../images/m'
         });
-    }
+        markerCluster.addMarker(this.marker);
+    } 
     boundsMarker(){
         let bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < markers.length; ++i) {

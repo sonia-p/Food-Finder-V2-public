@@ -170,7 +170,7 @@ function init(){
         }
         ]
     });
-
+    
     let userPosition = new google.maps.LatLng(myMap.lat,myMap.lng);
     let request = {
         location: userPosition,
@@ -202,10 +202,12 @@ function init(){
         }// fin if
 
     }// fin callback
-    //myMap.clusterMarker();
+    
+
     //// FILTRER ////
     $('.filter-btn').click(function(){
         // récupère valeur des champs mini et maxi
+        let nbrestau=0;
         let mini= $('#noteMini').val();
         let maxi= $('#noteMaxi').val();
         $('#noteMaxi').prop('selectedIndex',0);
@@ -216,12 +218,15 @@ function init(){
         } else {
             // vide la liste des restaurants
             $('.result').empty();
+            
             // génère la liste en fonction des notes sélectionnées
             restaurants.forEach(restaurant=>{
                 console.log(restaurant);
                 // affiche les restaurants contenus dans la sélection
                 if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){                   
-                    console.log("le restaurant va être affiché :" + restaurant);
+                    
+                    nbrestau+=1;
+                    console.log(nbrestau);
                     restaurant.addCard();
                     // marqueur et infowindow à la position du restaurant
                     restaurant.addMarker();       
@@ -229,9 +234,12 @@ function init(){
                     console.log("n'affiche pas ce restaurant : "+ restaurant);
                     restaurant.marker.setMap(null);
                 }
-            }) // fin for each            
+            }) // fin for each  
+         
         }// fin else  
-
+        if (nbrestau==0){
+            alert("il n'y a aucun résultat, veuillez réinitialiser la carte");
+        } 
     }); // fin $('.filter-btn').click
     $('#resetMapBtn').on('click',()=>{
         restaurants.forEach(restaurant=>{            
@@ -305,10 +313,10 @@ function init(){
         console.log('je clique sur le bouton publies')
         let id=parseInt(event.target.id); // je récupère l'id du bouton cliqué j'enlève 1 pour avoir son indice dans le tableau des rest
         console.log(id);
-        console.log($('#validationCustom01').val().length<=0);
+        console.log($('#validationCustom01').val().length<0);
         console.log($('#validationCustom01').val().length);
         console.log($('#validationCustom01').val());
-        console.log($('#validationCustom03').val().length<=0);
+        console.log($('#validationCustom03').val().length<0);
         console.log($('#validationCustom03').val().length);
         console.log($('#validationCustom03').val());
         console.log($('#validationCustom02').val() == 'Note');
@@ -316,7 +324,7 @@ function init(){
 
         $(`#addComment${id}`).addClass('was-validated');
         // vérification de la saisie
-        if ($('#validationCustom01').val().length<=0 || $('#validationCustom02').val().length== 'Note' || $('#validationCustom03').val()<=0 ){
+        if ($('#validationCustom01').val().length<0 || $('#validationCustom02').val().length== 'Note' || $('#validationCustom03').val()<0 ){
             console.log('je ne valide pas le form');
             event.preventDefault();
             event.stopPropagation();
