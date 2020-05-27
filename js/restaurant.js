@@ -18,7 +18,7 @@ class Restaurant {
         this.generateCommentHtml()
         this.addCard()
         this.addMarker()
-        this.clusterMarker()
+        //this.clusterMarker()
         this.boundsMarker()
     }
     generateAverageRating(){
@@ -125,7 +125,9 @@ class Restaurant {
             title: this.restaurantName
         }); 
         this.marker.setMap(map);
+        // stock les valeurs des markers pour fonction boundsMarker
         markers.push(this.marker);
+        
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=
         `<div class="row">
@@ -146,8 +148,8 @@ class Restaurant {
         // marqueur et infowindow à la position du restaurant
         this.marker.addListener('click', ()=> {           
             this.infoWindow.open(map, this.marker);
-
         });
+        
     }
     clusterMarker(){
         // rassemblement de marqueurs
@@ -157,7 +159,7 @@ class Restaurant {
             imagePath: '../images/m'
         });
         markerCluster.addMarker(this.marker);
-    } 
+    }  
     boundsMarker(){
         let bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < markers.length; ++i) {
@@ -166,7 +168,6 @@ class Restaurant {
         map.fitBounds(bounds);
     }
     addComment(noteToPublish,commentToPublish,pseudoToPublish){ 
-
         //console.log(this.averageRating);   
         this.ratings.unshift({"author_name":pseudoToPublish,"rating":parseInt(noteToPublish),"relative_time_description":Date.now(),"text":commentToPublish,"relative_time_description":"aujourd'hui"});
         console.log(this.ratings);
@@ -174,8 +175,7 @@ class Restaurant {
         //console.log(this.averageRating);
         this.generateCommentHtml();
         console.log(this.commentHtml);
-        this.addStar();  
-        
+        this.addStar();     
     }
     addStar(){
         //this.star="";
@@ -185,8 +185,7 @@ class Restaurant {
                 this.star+=`&nbsp;<img src="images/star.png" alt="star ou étoile">&nbsp;`;
             }
         } else {
-            this.star=`<i><small>Aucun commentaire</small></i>`;
-           
+            this.star=`<i><small>Aucun commentaire</small></i>`;   
         }
     }
     generateCommentHtml(){

@@ -12,11 +12,13 @@ window.onload = loadScript;
 let restaurants=[];
 let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
 let markers = [];
+let markerCluster;
 //initialise la carte
 function init(){
+    $('#resetMapBtn').hide();
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,18, 43.6833,4.2); // créer un objet GMap    
+    let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
@@ -169,16 +171,15 @@ function init(){
             ]
         }
         ]
-    });
-    
+    });    
     let userPosition = new google.maps.LatLng(myMap.lat,myMap.lng);
+    // paramètre de la requête à google place
     let request = {
         location: userPosition,
         radius: '3000',
-        //query: 'restaurant',
         type: ['restaurant']
-      };
-    
+    };
+    // 
     let service = new google.maps.places.PlacesService(map);
     // récupère les données dans la variable result et crée un objet Restaurant pour chaque restaurant 
     service.nearbySearch(request, callback); //Nearby Search returns a list of nearby places based on a user's location.
@@ -186,26 +187,27 @@ function init(){
         console.log(results);
         console.log(results.length);
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-                for (var i = 0; i < results.length; i++) {
+                for (var i = 0; i < results.length; i++) {  
+                    console.log(i);                  
                     service.getDetails({ //Place Details requests return more detailed information about a specific place, including user reviews.
                         placeId: results[i].place_id,
-                        fields: ['name', 'rating', 'user_ratings_total', 'opening_hours', 'photo', 'place_id', 'formatted_address', 'type',
+                        fields: ['name', 'rating', 'user_ratings_total', 'photo', 'place_id', 'formatted_address', 'type',
                             'geometry', 'review']
+                        
                     },(res) => {
                             if (res){
                                 console.log(res);
                                 restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(), res.reviews));
-                            }       
-                                                 
+                              
+  
+                            }                                                        
                         });  
                 }// fin for
         }// fin if
-
-    }// fin callback
-    
+    }// fin callback    
 
     //// FILTRER ////
-    $('.filter-btn').click(function(){
+    $('.filter-btn').click(()=>{
         // récupère valeur des champs mini et maxi
         let nbrestau=0;
         let mini= $('#noteMini').val();
@@ -217,14 +219,12 @@ function init(){
             alert('vous devez selectionner une note mini et maxi et/ou la note mini doit être inférieur à la note maxi');
         } else {
             // vide la liste des restaurants
-            $('.result').empty();
-            
+            $('.result').empty();            
             // génère la liste en fonction des notes sélectionnées
             restaurants.forEach(restaurant=>{
                 console.log(restaurant);
                 // affiche les restaurants contenus dans la sélection
-                if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){                   
-                    
+                if (restaurant.averageRating >=mini && restaurant.averageRating <= maxi){                                      
                     nbrestau+=1;
                     console.log(nbrestau);
                     restaurant.addCard();
@@ -233,18 +233,25 @@ function init(){
                 } else {
                     console.log("n'affiche pas ce restaurant : "+ restaurant);
                     restaurant.marker.setMap(null);
+                    // for (var i = 0; i < markers.length; i++) {
+                        //markerCluster.removeMarker(restaurant.marker);
+                    //} 
                 }
-            }) // fin for each  
-         
+            }) // fin for each           
         }// fin else  
         if (nbrestau==0){
             alert("il n'y a aucun résultat, veuillez réinitialiser la carte");
-        } 
+        }
+        $('#resetMapBtn').show(); 
     }); // fin $('.filter-btn').click
     $('#resetMapBtn').on('click',()=>{
+        // vide la liste des restaurants
+        $('.result').empty();
         restaurants.forEach(restaurant=>{            
                 restaurant.addCard();
-                restaurant.addMarker();       
+                restaurant.addMarker(); 
+                //restaurant.clusterMarker()
+                restaurant.boundsMarker()      
         }) // fin for each   
     })
     //// AJOUT D'UN RESTAURANT ////
@@ -273,9 +280,7 @@ function init(){
             window.alert('Geocoder failed due to: ' + status);
             }
         });
-        $('#newRestPublishBtn').click(()=>{ //au clique sur le bouton publie
-            
-            
+        $('#newRestPublishBtn').click(()=>{ //au clique sur le bouton publie           
             if ($('#restToAdd').val().length<=0){
                 event.preventDefault();
                 event.stopPropagation();
@@ -303,8 +308,7 @@ function init(){
                 $('#addRestaurantModal').modal('hide');
                 // ferme infowindow
                 infoWindow.close();
-            }
-            
+            }           
         });// fin #newRestPublishBtn.click
     }); // fin map.addlistener ajout d'un restau
 
@@ -328,10 +332,6 @@ function init(){
             console.log('je ne valide pas le form');
             event.preventDefault();
             event.stopPropagation();
-            
-            //$('#validationCustom01').addClass('invalid');
-            //$('#validationCustom02').addClass('invalid');
-            //$('#validationCustom03').addClass('invalid');
         } else {
             // récupération des données
             let noteToPublish = $('.note').eq(id-1).val();

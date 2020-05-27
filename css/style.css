@@ -1,16 +1,8 @@
-/* font-family: 'Shrikhand', cursive; */
-/* font-family: 'Raleway', sans-serif; */
-/* bleu : #0C4C7B
-yellow green : #C1D14B
-corail : #F36B5C
-dark slate Gray : #3B3C3C
-Slate Gray : #716B74 */
 /* la page remplit la fenêtre de navigation */
 html, body {
     height: 100%;
     margin: 0;
-    padding: 0;
-   
+    padding: 0;   
 }
 header{
     display: flex;
@@ -24,7 +16,6 @@ header{
 header figure img {
     height: 100px;
 }
-
 h1 {
     font-family: 'Raleway', sans-serif;
     color:white;
@@ -56,8 +47,7 @@ h1 {
     position : absolute;
     z-index : 10;
     left: 25%;
-    width : 150px;
-    
+    width : 150px;  
 }
 .card {
     padding: 10px;
@@ -74,7 +64,6 @@ h1 {
     height: 100%;
     overflow-y: auto; /* scrollbar de la liste */
 }
-
 .custom-select, .filter-btn{
     width:120px;
     height:50px;
@@ -86,23 +75,18 @@ h1 {
 }
 /* Ajustements de mise en page en fonction de la taille de l'écran */
 /* ----------- iPhone 6, 6S, 7 and 8 ----------- */
- 
 /* Portrait */
- 
 @media only screen and (min-width: 375px) and (max-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
     #resetMapBtn, #backToMapBtn{
         left: 50%;
     }
 }
- 
 /* Landscape */
- 
 @media only screen and (min-width: 375px) and (max-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
     #resetMapBtn, #backToMapBtn{
         left: 75%;
     }
 }
-
 
 /* Small devices & Medium devices (landscape phones, tablets, 768px and less) */
 @media (max-width: 768px) {
