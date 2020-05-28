@@ -32,6 +32,7 @@ class GMap {
     }
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(this.position);
+    alert('position sur montpellier');
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
         'Error: Your browser doesn\'t support geolocation.');

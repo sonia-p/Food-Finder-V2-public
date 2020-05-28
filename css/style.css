@@ -55,8 +55,22 @@ h1 {
     align-items: center;
 }
 .card-img{
-    width:175px ;  
+    width: 200px;
+   
 } 
+
+.restaurantCardBtn{
+    padding: 20px;
+}
+.pseudo{
+    padding: 10px;
+    margin: 10px;
+    height: 50px;
+}
+textarea{
+    padding: 10px;
+    margin: 10px;
+}
 .list{
     padding: 10px;
     background-color: #C1D14B;
@@ -102,7 +116,7 @@ h1 {
     #resetMapBtn, #backToMapBtn{
         left:50%;
     }
-    #dropdownMenu2, button, .card-text {
+    .note, button, .card-text {
         font-size: 12px;
     }
     .card-title {

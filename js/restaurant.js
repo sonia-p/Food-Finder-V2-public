@@ -35,21 +35,23 @@ class Restaurant {
     }
     addCard(){
         $('.result').append(`
-            <div class="card mb-3">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-sm-4 col-md-4">
-                    <img src="${this.picture}" class="card-img" alt="image google street view">                   
+            <div class="card mb-2">
+                <div class="row ">
+                    <div class="col-xs-4 col-sm-5 col-md-5">
+                    <img src="${this.picture}" class="card-img-top" alt="image google street view">                   
                     </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8">
+                    <div class="col-xs-8 col-sm-7 col-md-7">
                         <div  class="card-body">
                             <h5 class="card-title">${this.restaurantName}</h5>
                             <p class="card-text">${this.star}</p>
-                            <p class="card-text">${this.address}</p>
-                            <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lire les avis</button> 
-                            <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecrire un avis</button>      
-                            <button type="button" id="${this.identifiant}" class="btn btn-light">Visiter</button>                               
+                            <p class="card-text">${this.address}</p>                           
                         </div>                       
                     </div>                   
+                </div>
+                <div class="restaurantCardBtn">
+                    <button type="button" id="readCommentBtn${this.identifiant}" class="btn btn-light">Lire les avis</button> 
+                    <button type="button" id="addCommentBtn${this.identifiant}" class="btn btn-light">Ecrire un avis</button>      
+                    <button type="button" id="${this.identifiant}" class="btn btn-light">Visiter</button>                               
                 </div>
                 <div id="comment${this.identifiant}" class="commentList text-muted">
                 ${this.commentHtml}
@@ -130,7 +132,7 @@ class Restaurant {
         
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=
-        `<div class="row">
+        `<div class="row justify-content-start">
             <div class="col-xs-6 col-sm-6 col-md-6">
                 <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">                   
             </div>
@@ -151,7 +153,7 @@ class Restaurant {
         });
         
     }
-    clusterMarker(){
+/*     clusterMarker(){
         // rassemblement de marqueurs
         let markerCluster = new MarkerClusterer(map, markers,
             {
@@ -159,7 +161,7 @@ class Restaurant {
             imagePath: '../images/m'
         });
         markerCluster.addMarker(this.marker);
-    }  
+    }   */
     boundsMarker(){
         let bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < markers.length; ++i) {

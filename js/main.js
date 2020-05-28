@@ -18,7 +18,7 @@ function init(){
     $('#resetMapBtn').hide();
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,15, 43.6833,4.2); // créer un objet GMap    
+    let myMap= new GMap(map,15, 43.6112422,3.8767337); // créer un objet GMap    
     myMap.getUserPosition(); // récupère la position de l'utilisateur 
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
@@ -184,22 +184,20 @@ function init(){
     // récupère les données dans la variable result et crée un objet Restaurant pour chaque restaurant 
     service.nearbySearch(request, callback); //Nearby Search returns a list of nearby places based on a user's location.
     function callback(results, status) {
-        console.log(results);
-        console.log(results.length);
+
         if (status == google.maps.places.PlacesServiceStatus.OK) {
+            console.log(results);
+            console.log(results.length);
                 for (var i = 0; i < results.length; i++) {  
-                    console.log(i);                  
+                    console.log(results[i]);                  
                     service.getDetails({ //Place Details requests return more detailed information about a specific place, including user reviews.
                         placeId: results[i].place_id,
                         fields: ['name', 'rating', 'user_ratings_total', 'photo', 'place_id', 'formatted_address', 'type',
-                            'geometry', 'review']
-                        
+                            'geometry', 'review']                        
                     },(res) => {
                             if (res){
                                 console.log(res);
-                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(), res.reviews));
-                              
-  
+                                restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(), res.reviews));                           
                             }                                                        
                         });  
                 }// fin for
