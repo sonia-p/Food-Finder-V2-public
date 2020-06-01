@@ -11,7 +11,7 @@ class GMap {
         const self = this;
         // geolocation du user
         let infoWindow = new google.maps.InfoWindow;
-        if (navigator.geolocation) {            
+        if (navigator.geolocation) { //si la géolocalisation est activé          
             navigator.geolocation.getCurrentPosition((position)=> { 
             // récupération de la lat et long pour enregistrer la position
             this.position = {
@@ -26,15 +26,16 @@ class GMap {
             self.handleLocationError(true, infoWindow, this.map.getCenter());
             });   
         } else {
-            // Browser doesn't support Geolocation
+            // géolocalisation ne fonctionne pas
             self.handleLocationError(false, infoWindow, this.map.getCenter());
             }
     }
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(this.position);
-    alert('position sur montpellier');
+    
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
+        //alert('position sur montpellier');
         'Error: Your browser doesn\'t support geolocation.');
     infoWindow.open(map);
     }

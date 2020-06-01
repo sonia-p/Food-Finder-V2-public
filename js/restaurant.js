@@ -18,20 +18,15 @@ class Restaurant {
         this.generateCommentHtml()
         this.addCard()
         this.addMarker()
-        //this.clusterMarker()
-        this.boundsMarker()
     }
-    generateAverageRating(){
-       // console.log(this.ratings);   
+    generateAverageRating(){ 
         if(!!this.ratings.length){
             let sumRatings=0;
             for(let i=0; i< this.ratings.length; i++){
                 sumRatings = sumRatings + this.ratings[i].rating;
             }
             this.averageRating=Math.round((sumRatings/(this.ratings.length))); 
-            //console.log(this.averageRating);
-        }     
-        //console.log(this.averageRating);   
+        }       
     }
     addCard(){
         $('.result').append(`
@@ -105,18 +100,15 @@ class Restaurant {
             $(`#addComment${this.identifiant}`).hide();           
             $(`#comment${this.identifiant}`).toggle();
         })
-
         // au clique sur "ecris un avis"
         $(`#addCommentBtn${this.identifiant}`).on('click',()=>{
             $(`#comment${this.identifiant}`).hide();        
             $(`#addComment${this.identifiant}`).toggle();
-        })
-        
+        })        
         // au clique sur visiter
         $(`#${this.identifiant}`).on('click',()=>{
             this.generatePanorama();
-        });
-        
+        });    
     }
     addMarker(){
         this.position = new google.maps.LatLng(this.lat,this.long); 
@@ -126,10 +118,7 @@ class Restaurant {
             map:map,
             title: this.restaurantName
         }); 
-        this.marker.setMap(map);
-        // stock les valeurs des markers pour fonction boundsMarker
-        markers.push(this.marker);
-        
+        this.marker.setMap(map);       
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=
         `<div class="row justify-content-start">
@@ -142,7 +131,6 @@ class Restaurant {
                 <p>${this.address}</p>
             </div>    
         </div>`
-
         let infoWindowOptions = {
             content: content
         };
@@ -150,24 +138,7 @@ class Restaurant {
         // marqueur et infowindow à la position du restaurant
         this.marker.addListener('click', ()=> {           
             this.infoWindow.open(map, this.marker);
-        });
-        
-    }
-/*     clusterMarker(){
-        // rassemblement de marqueurs
-        let markerCluster = new MarkerClusterer(map, markers,
-            {
-            maxZoom: 15, // Zoom maxi quand le regroupement s'arrête
-            imagePath: '../images/m'
-        });
-        markerCluster.addMarker(this.marker);
-    }   */
-    boundsMarker(){
-        let bounds = new google.maps.LatLngBounds();
-        for (var i = 0; i < markers.length; ++i) {
-            bounds.extend(markers[i].position);
-        }
-        map.fitBounds(bounds);
+        });        
     }
     addComment(noteToPublish,commentToPublish,pseudoToPublish){ 
         //console.log(this.averageRating);   

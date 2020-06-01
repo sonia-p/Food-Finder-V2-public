@@ -1,7 +1,7 @@
 // générer le script google map en cachant la clé api dans gitignore
 function loadScript(){
     var script = document.createElement("script");
-    script.async= true;
+    script.async= true;// se charge sans attendre que tous les scripts soient chargés
     script.defer=true;
     script.src=`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=init` ;
     document.body.appendChild(script);
@@ -11,8 +11,6 @@ function loadScript(){
 window.onload = loadScript;
 let restaurants=[];
 let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
-let markers = [];
-let markerCluster;
 //initialise la carte
 function init(){
     $('#resetMapBtn').hide();
@@ -23,8 +21,8 @@ function init(){
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: {lat: myMap.lat, lng: myMap.lng},
         zoom: myMap.zoom,
-    // personnalisation de la map
-    styles :
+        // personnalisation de la map
+        styles :
     [
         {"elementType": "geometry","stylers": [{"color": "#ebe3cd"}]},
         {"elementType": "labels.text.fill","stylers": [{"color": "#523735"}]},
@@ -176,7 +174,7 @@ function init(){
     // paramètre de la requête à google place
     let request = {
         location: userPosition,
-        radius: '3000',
+        radius: '2000',
         type: ['restaurant']
     };
     // 
@@ -184,7 +182,6 @@ function init(){
     // récupère les données dans la variable result et crée un objet Restaurant pour chaque restaurant 
     service.nearbySearch(request, callback); //Nearby Search returns a list of nearby places based on a user's location.
     function callback(results, status) {
-
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             console.log(results);
             console.log(results.length);
@@ -195,10 +192,10 @@ function init(){
                         fields: ['name', 'rating', 'user_ratings_total', 'photo', 'place_id', 'formatted_address', 'type',
                             'geometry', 'review']                        
                     },(res) => {
-                            if (res){
+                            //if (res){
                                 console.log(res);
                                 restaurants.push(new Restaurant(restaurants.length+1,res.name, res.formatted_address, res.geometry.location.lat(), res.geometry.location.lng(),res.photos[0].getUrl(), res.reviews));                           
-                            }                                                        
+                            //}                                                        
                         });  
                 }// fin for
         }// fin if
@@ -231,9 +228,6 @@ function init(){
                 } else {
                     console.log("n'affiche pas ce restaurant : "+ restaurant);
                     restaurant.marker.setMap(null);
-                    // for (var i = 0; i < markers.length; i++) {
-                        //markerCluster.removeMarker(restaurant.marker);
-                    //} 
                 }
             }) // fin for each           
         }// fin else  
@@ -247,9 +241,7 @@ function init(){
         $('.result').empty();
         restaurants.forEach(restaurant=>{            
                 restaurant.addCard();
-                restaurant.addMarker(); 
-                //restaurant.clusterMarker()
-                restaurant.boundsMarker()      
+                restaurant.addMarker();  
         }) // fin for each   
     })
     //// AJOUT D'UN RESTAURANT ////
@@ -298,8 +290,7 @@ function init(){
                 );
                 console.log(newRestaurantToPublish);
                 console.log(restaurants);
-                restaurants.push(newRestaurantToPublish);// l'ajoute au tableau des restaurants
-                        
+                restaurants.push(newRestaurantToPublish);// l'ajoute au tableau des restaurants                        
                 // rétablie la valeur par défault de la modal
                 newRestName=$('#restToAdd').val("");
                 //ferme le modal
@@ -323,7 +314,6 @@ function init(){
         console.log($('#validationCustom03').val());
         console.log($('#validationCustom02').val() == 'Note');
         console.log($('#validationCustom02').val());
-
         $(`#addComment${id}`).addClass('was-validated');
         // vérification de la saisie
         if ($('#validationCustom01').val().length<0 || $('#validationCustom02').val().length== 'Note' || $('#validationCustom03').val()<0 ){
@@ -337,8 +327,6 @@ function init(){
             let pseudoToPublish=$('.pseudo').eq(id-1).val();
             console.log(noteToPublish);
             console.log(commentToPublish);
-
-
             // ajouter le commentaire à l'objet Restaurant        
             restaurants[id-1].addComment(noteToPublish,commentToPublish,pseudoToPublish);
             console.log(restaurants[id-1].ratings);
@@ -351,18 +339,8 @@ function init(){
                 restaurant.addMarker();       
             })// fin for each      
         }
-        
-        
-        // close modal
-        //$('#addCommentModal').modal('hide');
-        //$('.publishCommentBtn').off('click',event);
-
-    }); // fin $('#publishCommentBtn').click
-
-    
+    }); // fin $('#publishCommentBtn').click   
 } // fin function init
-
-    
 
 //rend la fonction init dans le scope global
 window.init=init;
