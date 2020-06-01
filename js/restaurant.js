@@ -141,17 +141,12 @@ class Restaurant {
         });        
     }
     addComment(noteToPublish,commentToPublish,pseudoToPublish){ 
-        //console.log(this.averageRating);   
         this.ratings.unshift({"author_name":pseudoToPublish,"rating":parseInt(noteToPublish),"relative_time_description":Date.now(),"text":commentToPublish,"relative_time_description":"aujourd'hui"});
-        console.log(this.ratings);
         this.generateAverageRating();
-        //console.log(this.averageRating);
         this.generateCommentHtml();
-        console.log(this.commentHtml);
         this.addStar();     
     }
     addStar(){
-        //this.star="";
         if (this.averageRating>0){
             this.star="";
             for (let i=0; i<this.averageRating; i++){
