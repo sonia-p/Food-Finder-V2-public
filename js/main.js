@@ -1,3 +1,6 @@
+let restaurants=[];
+let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
+  
 // générer le script google map en cachant la clé api dans gitignore
 function loadScript(){
     var script = document.createElement("script");
@@ -6,17 +9,14 @@ function loadScript(){
     script.src=`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=init` ;
     document.body.appendChild(script);
 } 
-
 // au chargement de la page lance le script pour google map api
 window.onload = loadScript;
-let restaurants=[];
-let newRestLat, newRestLng, newRestAddress, newComment, newRestName;
-//initialise la carte
+
 function init(){
     $('#resetMapBtn').hide();
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,15); // créer un objet GMap    
+    let myMap= new GMap(map,15); // créer un objet GMap
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: myMap.position,
         zoom: myMap.zoom,
@@ -202,8 +202,8 @@ function init(){
         }
         $('#resetMapBtn').show(); 
     }); // fin $('.filter-btn').click
+    // au clique sur le bouton reinitialiser la carte
     $('#resetMapBtn').on('click',()=>{
-        // vide la liste des restaurants
         $('.result').empty();
         restaurants.forEach(restaurant=>{            
                 restaurant.addCard();
