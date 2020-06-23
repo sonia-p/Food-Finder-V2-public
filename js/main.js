@@ -16,7 +16,7 @@ function init(){
     $('#resetMapBtn').hide();
     $('#pano').hide();
     $('#backToMapBtn').hide();
-    let myMap= new GMap(map,15); // créer un objet GMap
+    let myMap= new GMap(map,14); // créer un objet GMap
     map = new google.maps.Map(document.getElementById('map'), { // insert la carte dans le div map
         center: myMap.position,
         zoom: myMap.zoom,
@@ -232,7 +232,7 @@ function init(){
                 window.alert('No results found');
             }
             } else {
-            window.alert('Geocoder failed due to: ' + status);
+                window.alert('Geocoder failed due to: ' + status);
             }
         });
         $('#newRestPublishBtn').click(()=>{ //au clique sur le bouton publie           
@@ -268,7 +268,7 @@ function init(){
         let id=parseInt(event.target.id); // je récupère l'id du bouton cliqué j'enlève 1 pour avoir son indice dans le tableau des rest
         $(`#addComment${id}`).addClass('was-validated');
         // vérification de la saisie
-        if ($('#validationCustom01').val().length<0 || $('#validationCustom02').val().length== 'Note' || $('#validationCustom03').val()<0 ){
+        if ($('.pseudo').eq(id-1).val().length<=0 || $('.note').eq(id-1).val()== "" || $('.commentToAdd').eq(id-1).val()<=0 ){
             event.preventDefault();
             event.stopPropagation();
         } else {

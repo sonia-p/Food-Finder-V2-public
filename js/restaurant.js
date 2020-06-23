@@ -89,9 +89,9 @@ class Restaurant {
                 </form>
             </div>
         `)   
-        if (this.star==="<i><small>Aucun commentaire</small></i>"){
-            $(`#readCommentBtn${this.identifiant}`).hide();
-        }
+        //if (this.star==="<i><small>Aucun commentaire</small></i>"){
+        //    $(`#readCommentBtn${this.identifiant}`).hide();
+        //}
         // cache les sections "ajout d'un avis" et "lis les avis" par default
         $(`#comment${this.identifiant}`).hide();
         $(`#addComment${this.identifiant}`).hide();
@@ -122,10 +122,10 @@ class Restaurant {
         // au clique sur le marqueur affiche une fenetre avec les avis
         let content=
         `<div class="row justify-content-start">
-            <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="col-xs-7 col-sm-7 col-md-7">
                 <img src="https://maps.googleapis.com/maps/api/streetview?size=250x250&location=${this.lat},${this.long}&key=${streetViewApiKey}" class="card-img" alt="image google street view">                   
             </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="col-xs-5 col-sm-5 col-md-5">
                 <h6>${this.restaurantName}</h6>
                 <p>${this.star}</p>
                 <p>${this.address}</p>
